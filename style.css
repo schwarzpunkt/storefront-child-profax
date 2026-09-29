@@ -46,7 +46,7 @@ BODY a:active,
 BODY a:visited {
 	color: #67a6f8;
 	font-weight: normal ! important;
-	text-decoration: none ! important;	
+	text-decoration: none ! important;
 }
 
 a:focus, .button:focus, .button.alt:focus, .button.added_to_cart:focus, .button.wc-forward:focus, button:focus, input[type="button"]:focus, input[type="reset"]:focus, input[type="submit"]:focus {
@@ -65,7 +65,7 @@ H1, H2, H3, H4 {
 }
 
 H1 a {
-	color: #444;	
+	color: #444;
 }
 
 H1 {
@@ -102,7 +102,7 @@ DIV.entry-content H4 {
 LABEL {
 	font-weight: normal;
 }
-	
+
 
 #tab-description H3 {
 	text-align: left ! important;
@@ -124,7 +124,7 @@ ADDRESS, DD, HR, P {
 }
 
 BODY:not(.single-post) .hentry {
-	margin: 0 0 4em 0;	
+	margin: 0 0 4em 0;
 }
 
 .type-post table {
@@ -133,14 +133,13 @@ BODY:not(.single-post) .hentry {
 
 .type-post table tbody td,
 .type-post table tbody tr:nth-child(2n) td {
-	background-color: none;
 	background: none;
 	padding: 0 1em 0 0;
 }
 
 .site-main,
 .page-template-template-homepage .site-main {
-	padding-top: 3em;	
+	padding-top: 3em;
 }
 
 
@@ -166,7 +165,6 @@ border-radius: 0;
 
 HEADER.site-header {
 	border-bottom: solid 1px #ddd;
-	Xbackground-color: rgba(0,0,0,0.025) ! important;
 }
 
 
@@ -277,7 +275,7 @@ HEADER .col-full,
 
 .entry-content:not(.woocommerce-Tabs-panel) > p {
 	padding-left: 2.5em;
-	padding-right: 2.5em;		
+	padding-right: 2.5em;
 }
 
 .hentry .entry-header .posted-on {
@@ -302,7 +300,7 @@ article:nth-of-type(1) H2 {
 	margin-top: 0 ! important;
 }
 
-/* exp */ 
+/* exp */
 
 table td, table th,
 table.cart td, table.cart th {
@@ -322,11 +320,11 @@ table.cart td.product-quantity .qty {
 }
 
 .shop_table.woocommerce-checkout-review-order-table {
-	font-size: 15px;	
+	font-size: 15px;
 }
 
 .cart .price {
-	text-align: right;	
+	text-align: right;
 }
 
 body {
@@ -375,7 +373,7 @@ body {
 }
 
 .site-header-cart a.cart-contents {
-	color: #000 ! important;	
+	color: #000 ! important;
 }
 
 .widget.woocommerce.widget_shopping_cart {
@@ -460,7 +458,7 @@ h1 + div.storefront-sorting,
 }
 
 ul.products li.product {
-	margin-bottom: 1em;	
+	margin-bottom: 1em;
 }
 
 .product_cat-profaxonline:after {
@@ -525,7 +523,7 @@ aside.entry-meta > div > div:after {
 }
 
 .woocommerce-tabs .wc-tabs {
-	display: none;	
+	display: none;
 }
 
 .woocommerce-Tabs-panel--description H2:first-child {
@@ -636,15 +634,15 @@ FOOTER .widget_nav_menu ul {
 }
 
 FOOTER .widget_nav_menu ul li {
-	margin: 0;	
+	margin: 0;
 }
 
 FOOTER .widget_nav_menu ul li:before {
-	display: none;	
+	display: none;
 }
 
 .footer-widgets {
-	border-bottom: none;	
+	border-bottom: none;
 }
 
 footer li.menu-item a {
@@ -696,7 +694,7 @@ a.button:hover {
 }
 
 /* dark */
-	
+
 HEADER.site-header,
 .profax_blue HEADER.site-header {
 	background-color: #555 ! important;
@@ -804,7 +802,7 @@ button.menu-toggle span:after {
 @media (max-width: 768px) {
 table.cart td.product-remove a.remove {
 	display: inline;
-	margin: 13px 0 0 -10px;	
+	margin: 13px 0 0 -10px;
 }
 div#ajaxsearchliteres2 {
     top: 320px ! important;
@@ -821,11 +819,11 @@ div#ajaxsearchliteres2 {
 }
 
 .handheld-navigation ul li a {
-	padding: 0 ! important;	
+	padding: 0 ! important;
 }
 
 .handheld-navigation ul li a:before {
-	display: none;	
+	display: none;
 }
 
 a.button.product_type_external[href*=profaxonline] {
@@ -877,10 +875,10 @@ a.button.product_type_external[href*=play] {
     position: relative;
     top: -14px;
 }
-	
+
 .product_tag-fs,
 .product_tag-fs img {
-	box-shadow: none ! important;	
+	box-shadow: none ! important;
 }
 
 
