@@ -118,10 +118,10 @@ function custom_woocommerce_template_single_meta() {
 	if ( wc_product_sku_enabled() && ( $product->get_sku() || $product->is_type( 'variable' ))) {
 		echo '<span class="sku_wrapper">';
 		if ($book) {
-			echo 'ISBN-13: <span class="sku" itemprop="isbn">'.substr($sku, 5).'</span></span>';
+			echo 'ISBN-13: <span class="sku" itemprop="isbn">'.esc_html(substr($sku, 5)).'</span></span>';
 		} else {
 			_e('SKU:', 'woocommerce');
-			echo ' <span class="sku" itemprop="sku">'.$sku.'</span></span>';
+			echo ' <span class="sku" itemprop="sku">'.esc_html($sku).'</span></span>';
 		}
 	}
 
@@ -141,11 +141,15 @@ function custom_woocommerce_template_single_meta() {
 						if (strlen($attribute_string) > 0) {
 							$attribute_string .= ', ';
 						}
-						$archive_link = get_term_link( $term->slug, $attribute->get_name() );
+						$archive_link = get_term_link( $term );
+						if ( is_wp_error( $archive_link ) ) {
+							$attribute_string .= esc_html( $term->name );
+							continue;
+						}
 						if ($attr == 'pa_language') {
-							$attribute_string .= '<a itemprop href="' . $archive_link . '" content="'.$term->slug.'">'. $term->name . '</a>';
+							$attribute_string .= '<a itemprop href="' . esc_url( $archive_link ) . '" content="' . esc_attr( $term->slug ) . '">' . esc_html( $term->name ) . '</a>';
 						} else {
-							$attribute_string .= '<a itemprop href="' . $archive_link . '">'. $term->name . '</a>';
+							$attribute_string .= '<a itemprop href="' . esc_url( $archive_link ) . '">' . esc_html( $term->name ) . '</a>';
 						}
 					}
 				}
@@ -208,13 +212,13 @@ Das <a href="/produkt/profax-lerngeraet/">profax Lerngerät</a> mit Sofortrückm
 	} else if (has_term('e-learning', 'product_cat', $product->get_id())) {
 		$response = wp_remote_head('https://www.profaxonline.com/c/manuals/'.$product->get_sku().'_manual_de-DE.pdf', array('timeout' => 3));
 		if (wp_remote_retrieve_response_code($response) === 200) {
-			$manual = '<a target="_blank" href="https://www.profaxonline.com/c/manuals/'.$product->get_sku().'_manual_de-DE.pdf">⬇︎ '.$product->get_title().' Handbuch (.pdf)</a><br>';
+			$manual = '<a target="_blank" href="'.esc_url('https://www.profaxonline.com/c/manuals/'.$product->get_sku().'_manual_de-DE.pdf').'">⬇︎ '.esc_html($product->get_title()).' Handbuch (.pdf)</a><br>';
 		} else {
 			$manual = "";
 		}
 		echo '<div style="margin: -32px 0 64px; border-bottom: solid 1px #DDD; padding: 0 0 32px 300px;">
 '.$manual.'
-<a target="_blank" href="https://www.profaxonline.com/programs/'.$product->get_sku().'&pdf">⬇︎ '.$product->get_title().' Prospekt (.pdf)</a>
+<a target="_blank" href="'.esc_url('https://www.profaxonline.com/programs/'.$product->get_sku().'&pdf').'">⬇︎ '.esc_html($product->get_title()).' Prospekt (.pdf)</a>
 		</div>';
 	}
 }
