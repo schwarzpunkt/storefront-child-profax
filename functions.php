@@ -131,7 +131,7 @@ function custom_woocommerce_template_single_meta() {
 	foreach ($p_sort as $attr) {
 		if (isset($attrs[$attr])) {
 			$attribute = $attrs[$attr];
-			$taxonomy = get_taxonomy( $attribute['name'] );
+			$taxonomy = get_taxonomy( $attribute->get_name() );
 			$attribute_string = '';
 			if ( $taxonomy && ! is_wp_error( $taxonomy ) ) {
 				$terms = wp_get_post_terms( $post->ID, $taxonomy->name );
@@ -141,7 +141,7 @@ function custom_woocommerce_template_single_meta() {
 						if (strlen($attribute_string) > 0) {
 							$attribute_string .= ', ';
 						}
-						$archive_link = get_term_link( $term->slug, $attribute['name'] );
+						$archive_link = get_term_link( $term->slug, $attribute->get_name() );
 						if ($attr == 'pa_language') {
 							$attribute_string .= '<a itemprop href="' . $archive_link . '" content="'.$term->slug.'">'. $term->name . '</a>';
 						} else {
@@ -183,8 +183,8 @@ function custom_woocommerce_template_single_meta() {
 		}
 	}
 
-	echo $product->get_categories( ', ', '<span class="posted_in">' . _n( 'Category:', 'Categories:', $cat_count, 'woocommerce' ) . ' ', '</span>' );
-	echo $product->get_tags( ', ', '<span class="tagged_as">' . _n( 'Tag:', 'Tags:', $tag_count, 'woocommerce' ) . ' ', '</span>' );
+	echo wc_get_product_category_list( $product->get_id(), ', ', '<span class="posted_in">' . _n( 'Category:', 'Categories:', $cat_count, 'woocommerce' ) . ' ', '</span>' );
+	echo wc_get_product_tag_list( $product->get_id(), ', ', '<span class="tagged_as">' . _n( 'Tag:', 'Tags:', $tag_count, 'woocommerce' ) . ' ', '</span>' );
 	do_action( 'woocommerce_product_meta_end' );
 	echo '</div>';
 
