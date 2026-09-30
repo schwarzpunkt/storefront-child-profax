@@ -19,7 +19,7 @@ function storefront_custom_logo() {
 	remove_action('storefront_header', 'storefront_product_search', 40 );
 	remove_action('storefront_header', 'storefront_secondary_navigation', 30);
 
-	remove_action('storefront_content_top', 'woocommerce_breadcrumb', 10);
+	remove_action('storefront_before_content', 'woocommerce_breadcrumb', 10);
 
 //	add_action( 'storefront_header', 'storefront_display_custom_logo', 20 );
 	//add_action( 'woocommerce_single_product_summary', 'add_custom_field', 0 );
@@ -50,9 +50,8 @@ function storefront_custom_logo() {
 
 
 	// move meta to end of post
-	remove_action('storefront_single_post', 'storefront_post_meta', 20);
+	remove_action('storefront_post_header_before', 'storefront_post_meta', 10);
 	add_action('storefront_single_post', 'storefront_post_meta', 31);
-	remove_action('storefront_loop_post', 'storefront_post_meta', 20);
 	add_action('storefront_loop_post', 'storefront_post_meta', 31);
 
 	// custom meta for products
