@@ -52,6 +52,9 @@ function storefront_custom_logo() {
 	// remove "similar products"
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
 
+	// remove previous/next product pagination
+	remove_action( 'woocommerce_after_single_product_summary', 'storefront_single_product_pagination', 30 );
+
 	// credits
 	remove_action('storefront_footer', 'storefront_credit', 20);
 
