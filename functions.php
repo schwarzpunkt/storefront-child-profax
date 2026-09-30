@@ -57,8 +57,8 @@ function storefront_custom_logo() {
 
 	// custom profax lerngeraet reference
 	add_action( 'woocommerce_after_single_product_summary', 'custom_woocommerce_after_single_product_summary_pfg', 12 );
-	add_filter( 'woocommerce_product_tabs', 'woo_remove_product_tabs', 98 );
-	function woo_remove_product_tabs( $tabs ) {
+	add_filter( 'woocommerce_product_tabs', 'profax_remove_product_tabs', 98 );
+	function profax_remove_product_tabs( $tabs ) {
 		//unset( $tabs['description'] );      	// Remove the description tab
 		//unset( $tabs['reviews'] ); 			// Remove the reviews tab
 		unset( $tabs['additional_information'] );  	// Remove the additional information tab
