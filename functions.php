@@ -8,11 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-//Storefront adds it's own stylesheet for child themes
-
-// Put your custom PHP below
-
-// Display 100 products per page. Goes in functions.php
+// Display 100 products per page
 add_filter( 'loop_shop_per_page', function( $cols ) {
 	return 100;
 }, 20 );
