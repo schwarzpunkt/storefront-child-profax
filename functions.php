@@ -21,10 +21,6 @@ function storefront_custom_logo() {
 
 	remove_action('storefront_before_content', 'woocommerce_breadcrumb', 10);
 
-//	add_action( 'storefront_header', 'storefront_display_custom_logo', 20 );
-	//add_action( 'woocommerce_single_product_summary', 'add_custom_field', 0 );
-
-
 	// wrap thumbnails, so that we can center them
 	add_action( 'woocommerce_before_shop_loop_item_title', function() {
 		echo '<div class="thumbnail_wrapper">';
