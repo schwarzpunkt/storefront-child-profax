@@ -472,7 +472,7 @@ ul.products li.product {
     text-shadow: 0 2px 0 rgba(0,0,0,0.5);
 }
 
-img.attachment-shop_catalog.size-shop_catalog.wp-post-image:hover {
+img.attachment-shop_catalog.size-shop_catalog:hover {
     transform: scale(1.05);
 }
 

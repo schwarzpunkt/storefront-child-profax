@@ -26,26 +26,17 @@ function storefront_custom_logo() {
 
 
 	// wrap thumbnails, so that we can center them
-	remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10);
-	add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail2', 10);
+	add_action( 'woocommerce_before_shop_loop_item_title', function() {
+		echo '<div class="thumbnail_wrapper">';
+	}, 9 );
+	add_action( 'woocommerce_before_shop_loop_item_title', function() {
+		echo '</div>';
+	}, 11 );
 
-	if ( ! function_exists( 'woocommerce_template_loop_product_thumbnail2' ) ) {
-		function woocommerce_template_loop_product_thumbnail2() {
-			echo woocommerce_get_product_thumbnail2();
-		}
-	}
-	if ( ! function_exists( 'woocommerce_get_product_thumbnail2' ) ) {
-		function woocommerce_get_product_thumbnail2( $size = 'shop_catalog', $placeholder_width = 0, $placeholder_height = 0  ) {
-			global $post, $woocommerce;
-			$output = '<div class="thumbnail_wrapper">';
-
-			if ( has_post_thumbnail() ) {
-				$output .= get_the_post_thumbnail( $post->ID, $size );
-			}
-			$output .= '</div>';
-			return $output;
-		}
-	}
+	// keep the 300px catalog size until thumbnails are regenerated
+	add_filter( 'single_product_archive_thumbnail_size', function() {
+		return 'shop_catalog';
+	} );
 
 
 
