@@ -887,3 +887,50 @@ a.button.product_type_external[href*=play] {
     float: right;
     padding: 0 0 1em 1em;
 }
+
+
+/* Hinweis-Blöcke unter dem Produkt (Lerngerät, E-Learning) */
+.profax-promo {
+	margin: -32px 0 64px;
+	border-bottom: solid 1px #DDD;
+	padding: 0 0 32px;
+}
+
+.profax-promo--profaxli {
+	padding-bottom: 64px;
+}
+
+.profax-promo--elearning {
+	padding-left: 300px;
+}
+
+.profax-promo__image img {
+	float: left;
+	height: 150px;
+	margin: 0 40px 0 0;
+}
+
+.profax-promo--profaxli .profax-promo__image img {
+	width: 150px;
+}
+
+.profax-promo--profax .profax-promo__image img {
+	width: 300px;
+}
+
+.profax-promo h3 {
+	margin-top: 0 ! important;
+	text-align: left;
+	display: inline-block;
+}
+
+@media (max-width: 768px) {
+	.profax-promo--elearning {
+		padding-left: 0;
+	}
+
+	.profax-promo__image img {
+		float: none;
+		margin: 0 0 1em;
+	}
+}
