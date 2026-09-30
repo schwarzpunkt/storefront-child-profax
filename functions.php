@@ -4,6 +4,10 @@
  * @package storefront-child-profax
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 //Storefront adds it's own stylesheet for child themes
 
 // Put your custom PHP below
@@ -65,11 +69,6 @@ function storefront_custom_logo() {
 }
 
 function custom_woocommerce_template_single_meta() {
-
-	if ( ! defined( 'ABSPATH' ) ) {
-		exit; // Exit if accessed directly
-	}
-
 
 	// https://schema.org/Book
 		// illustrator
