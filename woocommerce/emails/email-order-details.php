@@ -41,29 +41,37 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;font-family: Helvetica,Arial;font-size:16px;" id="inner_totals">
 	<tfoot>
 		<?php
+			$format_chf = function( $amount ) {
+				return number_format( (float) $amount, wc_get_price_decimals(), wc_get_price_decimal_separator(), wc_get_price_thousand_separator() ) . ' CHF';
+			};
+
 			if ( $totals = $order->get_order_item_totals() ) {
-				$totals = (array)$totals;
-				foreach ($totals as $total) {
-					if (strpos($total['label'], 'esamt:') > 0) {
-						preg_match_all('/(\d*\.\d{2})/u', $total['value'], $chf, PREG_SET_ORDER);
+				foreach ( $totals as $key => $total ) {
+					if ( 'order_total' === $key ) {
 						echo '
 					<tr>
 						<td class="td" style="width:33%;"> </td>
 						<th class="td" scope="row" style="font-weight:200 ! important;text-align:left;">MWST inkl.</th>
-						<td class="td" style="text-align:right;">'.$chf[1][0].' CHF</td>
+						<td class="td" style="text-align:right;">'.$format_chf( $order->get_total_tax() - $order->get_total_tax_refunded() ).'</td>
 					</tr>
 					<tr>
 						<td class="td" style="width:50%;"></td>
 						<th class="tdl" scope="row" style="font-weight:200 ! important;text-align:left;border-bottom: 3px double #AAAAAA;"><b>Rechnungsbetrag</b></th>
-						<td class="tdl" style="text-align:right;border-bottom: 3px double #AAAAAA;"><b>'.$chf[0][0].' CHF</b></td>
+						<td class="tdl" style="text-align:right;border-bottom: 3px double #AAAAAA;"><b>'.$format_chf( $order->get_total() - $order->get_total_refunded() ).'</b></td>
 					</tr>';
-					} else if (!strpos($total['label'], 'ahlungsart')) {
-						preg_match('/\d.*?\d\d/', $total['value'], $chf);
+					} else if ( 'payment_method' !== $key ) {
+						// value is formatted HTML like "&#67;&#72;&#70;&nbsp;8.90 via Post Paket"
+						$text = trim( html_entity_decode( wp_strip_all_tags( $total['value'] ), ENT_QUOTES, 'UTF-8' ) );
+						if ( preg_match( '/\d(?:[\d\'’]*\d)?\.\d{2}/u', $text, $chf ) ) {
+							$value = ( 0 === strpos( $text, '-' ) ? '-' : '' ) . $chf[0] . ' CHF';
+						} else {
+							$value = $text; // e.g. free shipping without amount
+						}
 						echo'
 					<tr>
 						<td class="td" style="width:33%;"></td>
-						<th class="td" scope="row" style="font-weight:200 ! important;text-align:left;">'.str_replace(':', '', $total['label']).'</th>
-						<td class="td" style="text-align:right;">'.$chf[0].' CHF</td>
+						<th class="td" scope="row" style="font-weight:200 ! important;text-align:left;">'.esc_html( str_replace(':', '', $total['label']) ).'</th>
+						<td class="td" style="text-align:right;">'.esc_html( $value ).'</td>
 					</tr>';
 					}
 				}
