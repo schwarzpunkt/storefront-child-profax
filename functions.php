@@ -68,24 +68,6 @@ function storefront_custom_logo() {
 }
 
 function custom_woocommerce_template_single_meta() {
-
-	// https://schema.org/Book
-		// illustrator
-		// isbn
-		// author
-		// award
-		// contributor
-		// publisher
-		// gtin13
-
-		// inLanguage
-
-
-	//print_r(get_post_custom($post->ID)['_product_attributes']);
-
-	//print_r($product->get_attributes());
-
-
 	global $post, $product;
 
 	$cats = get_the_terms( $post->ID, 'product_cat' );
@@ -102,10 +84,10 @@ function custom_woocommerce_template_single_meta() {
 	if ( wc_product_sku_enabled() && ( $product->get_sku() || $product->is_type( 'variable' ))) {
 		echo '<span class="sku_wrapper">';
 		if ($book) {
-			echo 'ISBN-13: <span class="sku" itemprop="isbn">'.esc_html(substr($sku, 5)).'</span></span>';
+			echo 'ISBN-13: <span class="sku">'.esc_html(substr($sku, 5)).'</span></span>';
 		} else {
 			_e('SKU:', 'woocommerce');
-			echo ' <span class="sku" itemprop="sku">'.esc_html($sku).'</span></span>';
+			echo ' <span class="sku">'.esc_html($sku).'</span></span>';
 		}
 	}
 
@@ -130,42 +112,37 @@ function custom_woocommerce_template_single_meta() {
 							$attribute_string .= esc_html( $term->name );
 							continue;
 						}
-						if ($attr == 'pa_language') {
-							$attribute_string .= '<a itemprop href="' . esc_url( $archive_link ) . '" content="' . esc_attr( $term->slug ) . '">' . esc_html( $term->name ) . '</a>';
-						} else {
-							$attribute_string .= '<a itemprop href="' . esc_url( $archive_link ) . '">' . esc_html( $term->name ) . '</a>';
-						}
+						$attribute_string .= '<a href="' . esc_url( $archive_link ) . '">' . esc_html( $term->name ) . '</a>';
 					}
 				}
 			}
 			switch ($attr) {
 				case 'pa_autor':
-				// http:/wordpress/author/[pa_author]/
-					echo '<span class="'.$attr.'" style="display: block;">Autor: '.str_replace(' itemprop ', ' itemprop="author" ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Autor: '.$attribute_string.'</span>';
 					break;
 				case 'pa_illustration':
-					echo '<span class="'.$attr.'" style="display: block;">Illustration: '.str_replace(' itemprop ', ' itemprop="illustrator" ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Illustration: '.$attribute_string.'</span>';
 					break;
 				case 'pa_programing':
-					echo '<span class="'.$attr.'" style="display: block;">Programmierung: '.str_replace(' itemprop ', ' itemprop="author" ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Programmierung: '.$attribute_string.'</span>';
 					break;
 				case 'pa_wissenschaftliche-beratung':
-					echo '<span class="'.$attr.'" style="display: block;">Wissenschaftliche Beratung: '.str_replace(' itemprop ', ' itemprop="author" ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Wissenschaftliche Beratung: '.$attribute_string.'</span>';
 					break;
 				case 'pa_design':
-					echo '<span class="'.$attr.'" style="display: block;">Gestaltung: '.str_replace(' itemprop ', ' ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Gestaltung: '.$attribute_string.'</span>';
 					break;
 				case 'pa_alter':
-					echo '<span class="'.$attr.'" style="display: block;" >Alter: <span itemprop="typicalAgeRange">'.strip_tags($attribute_string).'</span></span>';
+					echo '<span class="'.$attr.'" style="display: block;" >Alter: <span>'.strip_tags($attribute_string).'</span></span>';
 					break;
 				case 'pa_klasse':
-					echo '<span class="'.$attr.'" style="display: block;">Klasse: '.str_replace(' itemprop ', ' ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Klasse: '.$attribute_string.'</span>';
 					break;
 				case 'pa_zyklus':
-					echo '<span class="'.$attr.'" style="display: block;">Zyklus: '.str_replace(' itemprop ', ' ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;">Zyklus: '.$attribute_string.'</span>';
 					break;
 				case 'pa_language':
-					echo '<span class="'.$attr.'" style="display: block;" >Sprache: '.str_replace(' itemprop ', ' itemprop="inLanguage" ', $attribute_string).'</span>';
+					echo '<span class="'.$attr.'" style="display: block;" >Sprache: '.$attribute_string.'</span>';
 					break;
 			}
 		}
@@ -176,6 +153,53 @@ function custom_woocommerce_template_single_meta() {
 	do_action( 'woocommerce_product_meta_end' );
 	echo '</div>';
 
+}
+
+// Add schema.org Book data to WooCommerce's product JSON-LD for products with an ISBN SKU
+add_filter( 'woocommerce_structured_data_product', 'profax_structured_data_book', 10, 2 );
+function profax_structured_data_book( $markup, $product ) {
+	$sku = $product->get_sku();
+	if ( ! stristr( $sku, 'ISBN' ) ) {
+		return $markup;
+	}
+
+	$markup['isbn'] = substr( $sku, 5 );
+
+	$attrs = $product->get_attributes();
+	$terms = function( $taxonomy, $field = 'names' ) use ( $attrs, $product ) {
+		return isset( $attrs[ $taxonomy ] ) ? wc_get_product_terms( $product->get_id(), $taxonomy, array( 'fields' => $field ) ) : array();
+	};
+
+	$people = array(
+		'author'      => array( 'pa_autor', 'pa_programing', 'pa_wissenschaftliche-beratung' ),
+		'illustrator' => array( 'pa_illustration' ),
+	);
+	foreach ( $people as $prop => $taxonomies ) {
+		foreach ( $taxonomies as $taxonomy ) {
+			foreach ( $terms( $taxonomy ) as $name ) {
+				$markup[ $prop ][] = array( '@type' => 'Person', 'name' => $name );
+			}
+		}
+	}
+
+	if ( $languages = $terms( 'pa_language', 'slugs' ) ) {
+		$markup['inLanguage'] = $languages;
+	}
+	if ( $ages = $terms( 'pa_alter' ) ) {
+		$markup['typicalAgeRange'] = implode( ', ', $ages );
+	}
+
+	return $markup;
+}
+
+// Type book products as Product + Book. WooCommerce groups structured data by a
+// single @type string, so the type is only widened when the output is assembled.
+add_filter( 'woocommerce_structured_data_context', 'profax_structured_data_book_type', 10, 4 );
+function profax_structured_data_book_type( $context, $data, $type, $value ) {
+	if ( 'product' === $type && is_array( $value ) && 1 === count( $value ) && isset( $value[0]['isbn'] ) ) {
+		$context['@type'] = array( 'Product', 'Book' );
+	}
+	return $context;
 }
 
 function custom_woocommerce_after_single_product_summary_pfg() {
