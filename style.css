@@ -6,7 +6,7 @@ Description: profax child theme for the Storefront theme.
 Author: mike.kronenberg@profax.ch
 Author URI: http://mike.kronenberg.org
 Template: storefront
-Version: 1.1
+Version: 1.2
 License: Proprietary profax
 License URI: http://www.profax.ch
 Text Domain: storefront-child-profax
@@ -445,7 +445,6 @@ a.button.product_type_external {
 h1 + div.storefront-sorting,
 .wc-forward:after,
 .woocommerce-Button--next:after,
-.button.product_type_grouped,
 .button.product_type_simple {
 	display: none;
 }
@@ -459,17 +458,6 @@ h1 + div.storefront-sorting,
 
 ul.products li.product {
 	margin-bottom: 1em;
-}
-
-.product_cat-profaxonline:after {
-    content: '\f10a';
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    font-family: FontAwesome;
-    font-size: 32px;
-    color: #FFF;
-    text-shadow: 0 2px 0 rgba(0,0,0,0.5);
 }
 
 img.attachment-shop_catalog.size-shop_catalog:hover {
@@ -826,56 +814,6 @@ div#ajaxsearchliteres2 {
 	display: none;
 }
 
-a.button.product_type_external[href*=profaxonline] {
-    border-radius: 4px;
-    width: 186px;
-    height: 50px;
-    padding: 13px 0 0 0;
-    font-size: 29px;
-    position: relative;
-    top: -14px;
-    left: 4px;
-    color: #FFF ! important;
-}
-a.button.product_type_external[href*=profaxonline]::before {
-    content: 'sofort trainieren';
-    display: block;
-    font-size: 14px;
-    /* margin: -2px 0 0 0; */
-    font-weight: bold;
-    position: absolute;
-    top: 1px;
-    left: 67px;
-}
-
-a.button.product_type_external[href*=itunes] {
-    background-image: url(http://www.profax.ch/wordpress/wp-content/uploads/2017/03/Download_on_the_App_Store_Badge_DE_Source_mittel_thumb.png) ! important;
-    background-repeat: no-repeat ! important;
-    background-position: -4px -7px! important;
-    background-size: 202px ! important;
-    background-color: transparent ! important;
-    color: transparent;
-    height: 55px;
-    box-shadow: none;
-    padding: 0;
-    position: relative;
-    top: -14px;
-}
-
-a.button.product_type_external[href*=play] {
-    background-image: url(http://www.profax.ch/wordpress/wp-content/uploads/2017/03/google-play-badge_thumb.png) ! important;
-    background-repeat: no-repeat ! important;
-    background-position: -4px -7px! important;
-    background-size: 202px ! important;
-    background-color: transparent ! important;
-    color: transparent;
-    height: 55px;
-    box-shadow: none;
-    padding: 0;
-    position: relative;
-    top: -14px;
-}
-
 .product_tag-fs,
 .product_tag-fs img {
 	box-shadow: none ! important;
@@ -889,7 +827,7 @@ a.button.product_type_external[href*=play] {
 }
 
 
-/* Hinweis-Blöcke unter dem Produkt (Lerngerät, E-Learning) */
+/* Hinweis-Blöcke unter dem Produkt (Lerngerät) */
 .profax-promo {
 	margin: -32px 0 64px;
 	border-bottom: solid 1px #DDD;
@@ -898,10 +836,6 @@ a.button.product_type_external[href*=play] {
 
 .profax-promo--profaxli {
 	padding-bottom: 64px;
-}
-
-.profax-promo--elearning {
-	padding-left: 300px;
 }
 
 .profax-promo__image img {
@@ -925,10 +859,6 @@ a.button.product_type_external[href*=play] {
 }
 
 @media (max-width: 768px) {
-	.profax-promo--elearning {
-		padding-left: 0;
-	}
-
 	.profax-promo__image img {
 		float: none;
 		margin: 0 0 1em;

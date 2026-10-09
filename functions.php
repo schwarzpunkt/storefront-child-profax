@@ -197,16 +197,5 @@ Das <a href="'.$link.'">profaxli Lerngerät</a> und die Logo-Hefte 1-8 bilden zu
 <h3>benötigt das <a href="'.$link.'">profax Lerngerät</a></h3><br />
 Das <a href="'.$link.'">profax Lerngerät</a> mit Sofortrückmeldung und Kontrollblatt ist zusammen mit den Lehrmitteln zur Rechtschreibung, zum Textverständnis, zur Mathe und zu andern Themen ein wirksames Lernsystem. Es eignet sich für alle Formen von selbstständigem Lernen: Werkstattunterricht, offener Unterricht, Förderunterricht, Nachhilfe, usw.
 		</div>';
-	} else if (has_term('e-learning', 'product_cat', $product->get_id()) && $product->get_sku()) {
-		$response = wp_remote_head('https://www.profaxonline.com/c/manuals/'.$product->get_sku().'_manual_de-DE.pdf', array('timeout' => 3));
-		if (wp_remote_retrieve_response_code($response) === 200) {
-			$manual = '<a target="_blank" href="'.esc_url('https://www.profaxonline.com/c/manuals/'.$product->get_sku().'_manual_de-DE.pdf').'">⬇︎ '.esc_html($product->get_title()).' Handbuch (.pdf)</a><br>';
-		} else {
-			$manual = "";
-		}
-		echo '<div class="profax-promo profax-promo--elearning">
-'.$manual.'
-<a target="_blank" href="'.esc_url('https://www.profaxonline.com/programs/'.$product->get_sku().'&pdf').'">⬇︎ '.esc_html($product->get_title()).' Prospekt (.pdf)</a>
-		</div>';
 	}
 }
