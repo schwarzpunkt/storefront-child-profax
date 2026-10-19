@@ -147,6 +147,38 @@ if [ "$HAS_WP" = 1 ]; then
 	assert_not_contains "$MISSING" 'PHPWARN' "no PHP warning for missing slugs"
 fi
 
+# --- Class filter on shop and category pages, combined with the category navigation ---
+klassen_row() { tr -d '\n' <<<"$1" | grep -o '<nav class="profax-klassen-filter".*' | sed 's|</nav>.*||'; }
+pill_labels() { grep -oE '<a [^>]*>[^<]+</a>' <<<"$1" | sed -E 's/<[^>]+>//g' | paste -sd'|' -; }
+shop_nav() { sed -n '/<nav id="site-navigation" class="profax-shop-nav"/,/<\/nav>/p' <<<"$1"; }
+MATHE_HTML="$(get /produktkategorie/mathematik/)"
+MATHE="$(klassen_row "$MATHE_HTML")"
+assert_equals "$(pill_labels "$MATHE")" "Alle|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse" "category class pills: only classes of the category"
+assert_contains "$MATHE" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/\" aria-current=\"true\">Alle</a>" "Alle active without class filter"
+assert_not_contains "$(shop_nav "$MATHE_HTML")" 'profax-no-match' "no dimmed categories without class filter"
+MATHE3_HTML="$(get '/produktkategorie/mathematik/?filter_klasse=3')"
+MATHE3="$(klassen_row "$MATHE3_HTML")"
+assert_contains "$MATHE3" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=3\" aria-current=\"true\">3. Klasse</a>" "active class pill"
+assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/\">Alle</a>" "Alle removes the class filter, keeps the category"
+assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=4\">4. Klasse</a>" "class pill keeps the category"
+assert_equals "$(grep -c 'class="product type-product' <<<"$MATHE3_HTML")" "5" "category and class filter combined"
+NAV9="$(shop_nav "$(get '/shop/?filter_klasse=9')")"
+assert_contains "$NAV9" "href=\"$SHOP/produktkategorie/geografie/?filter_klasse=9\"" "category link keeps the class filter"
+assert_contains "$NAV9" "href=\"$SHOP/shop/?filter_klasse=9\"" "Alle category link keeps the class filter"
+RS9="$(grep -oE '<li [^>]*><a href="[^"]*/rechtschreibung/[^"]*"' <<<"$NAV9")"
+assert_contains "$RS9" 'profax-no-match' "category without products for the class is dimmed"
+assert_not_contains "$RS9" 'filter_klasse' "dimmed category links without class filter"
+assert_contains "$(klassen_row "$(get '/shop/?filter_klasse=vorschule')")" 'aria-current="true">Vorschule</a>' "class row on the shop page shows the active filter"
+assert_not_contains "$(get '/produktkategorie/mathematik/?filter_klasse=%22%3E%3Cb%3Exss')" '"><b>xss' "class filter value is escaped"
+SEARCH_HTML="$(get '/?s=mathe&post_type=product')"
+assert_contains "$SEARCH_HTML" 'class="product type-product' "product search returns products"
+assert_not_contains "$SEARCH_HTML" 'profax-klassen-filter' "no class row on search results (links would drop the search)"
+if [ "$HAS_WP" = 1 ]; then
+	ONE="$(wp_eval 'echo profax_klassen_filter_html( home_url( "/shop/" ), array( get_term_by( "slug", "3", "pa_klasse" ) ), "" ); echo "END";')"
+	assert_not_contains "$ONE" 'profax-klassen-filter' "single class -> no class row"
+	assert_not_contains "$ONE" 'PHPWARN' "no PHP warning for single class row"
+fi
+
 # --- Backend changes: menus and front page content (see docs/backend-menus.md) ---
 if [ "${MENUS:-0}" = "1" ]; then
 	for path in / /shop/ /produkt/ersatzschieber-profax/ /warenkorb/ /mein-konto/ /blog/; do  # /kasse/ redirects to the cart while it is empty

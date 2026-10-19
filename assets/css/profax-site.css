@@ -284,7 +284,9 @@ body a.added_to_cart:visited {
 	color: #FFF;
 }
 .profax-shop-nav ul.menu li.current-menu-item a,
-.profax-shop-nav ul.menu li.current-menu-item a:hover {
+.profax-shop-nav ul.menu li.current-menu-item a:hover,
+.profax-pills li.is-active a,
+.profax-pills li.is-active a:hover {
 	background-color: #50A8FF;
 	color: #FFF;
 }
@@ -696,4 +698,46 @@ ul.products li.product .woocommerce-loop-product__title {
 .profax-front-jobs a:hover strong,
 .profax-front-jobs a:focus strong {
 	color: #FFF;
+}
+
+/* class filter on shop and category pages (functions.php: profax_archive_klassen) */
+.profax-klassen-filter {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5em;
+	margin: 1em 0 1.5em;
+}
+.profax-klassen-filter__label {
+	flex: 0 0 auto;
+	font-size: 15px;
+	color: #3088E0;
+}
+/* categories without products for the active class: dimmed, link without the class filter */
+.profax-shop-nav ul.menu li.profax-no-match a {
+	opacity: 0.45;
+}
+.profax-shop-nav ul.menu li.profax-no-match a:hover,
+.profax-shop-nav ul.menu li.profax-no-match a:focus {
+	opacity: 1;
+}
+/* mobile: one swipeable row like the category navigation */
+@media (max-width: 48.999rem) {
+	.profax-klassen-filter .profax-pills {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+		padding-bottom: 0.25em;
+		mask-image: linear-gradient(to right, #000 calc(100% - 3em), transparent);
+	}
+	.profax-klassen-filter .profax-pills::-webkit-scrollbar {
+		display: none;
+	}
+	.profax-klassen-filter .profax-pills li {
+		flex: 0 0 auto;
+	}
+	/* active class first, so it is visible without swiping */
+	.profax-klassen-filter .profax-pills li.is-active {
+		order: -1;
+	}
 }
