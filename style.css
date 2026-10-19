@@ -165,12 +165,6 @@ border-radius: 0;
 	display: none;
 }
 
-.hentry .display-posts-listing .wp-post-image {
-	display: inline-block;
-	float: left;
-	margin: 0.5em 1em 1em 0;
-}
-
 article:nth-of-type(1) H2 {
 	margin-top: 0 ! important;
 }
