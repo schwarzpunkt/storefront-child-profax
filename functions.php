@@ -391,8 +391,8 @@ function profax_site_footer() {
 	<?php
 }
 
-// Product categories (Storefront primary menu) as shop navigation below the header
-add_action( 'storefront_before_content', 'profax_shop_nav', 5 );
+// Product categories (Storefront primary menu) as shop navigation below the search (priority 10)
+add_action( 'storefront_before_content', 'profax_shop_nav', 15 );
 function profax_shop_nav() {
 	if ( ! has_nav_menu( 'primary' ) ) {
 		return;

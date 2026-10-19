@@ -15,6 +15,14 @@
 }
 @font-face {
 	font-family: 'zimi';
+	src: url(../fonts/zimiregular.woff2) format('woff2'),
+		url(../fonts/zimiregular.woff) format('woff');
+	font-weight: 500;
+	font-style: normal;
+	font-display: block;
+}
+@font-face {
+	font-family: 'zimi';
 	src: url(../fonts/zimidemibold.woff2) format('woff2'),
 		url(../fonts/zimidemibold.woff) format('woff');
 	font-weight: bold;
@@ -245,7 +253,7 @@ body a.added_to_cart:visited {
 .profax-shop-nav ul {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.25em 1.25em;
+	gap: 0.5em;
 	max-width: 1020px;
 	margin: 0 auto;
 	padding: 1em 20px 0;
@@ -253,6 +261,51 @@ body a.added_to_cart:visited {
 }
 .profax-shop-nav li {
 	margin: 0;
+}
+/* categories as pills */
+.profax-shop-nav ul.menu li a {
+	display: block;
+	/* zimi sits high (ascent 11px, descent 4px at 15px): shift text 2px down to center it optically */
+	padding: 6.5px 0.9em 2.5px;
+	border-radius: 999px;
+	background-color: rgba(80, 168, 255, 0.25);
+	color: #3088E0;
+	font-size: 15px;
+	line-height: 1.4;
+	white-space: nowrap;
+	transition: background-color 0.125s, color 0.125s;
+}
+.profax-shop-nav ul.menu li a:hover,
+.profax-shop-nav ul.menu li a:focus {
+	background-color: #1088FF;
+	color: #FFF;
+}
+.profax-shop-nav ul.menu li.current-menu-item a,
+.profax-shop-nav ul.menu li.current-menu-item a:hover {
+	background-color: #50A8FF;
+	color: #FFF;
+}
+/* mobile: one swipeable row instead of a block of links */
+@media (max-width: 48.999rem) {
+	.profax-shop-nav ul {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+		padding-bottom: 0.25em;
+		mask-image: linear-gradient(to right, #000 calc(100% - 3em), transparent);
+	}
+	.profax-shop-nav ul::-webkit-scrollbar {
+		display: none;
+	}
+	.profax-shop-nav li {
+		flex: 0 0 auto;
+		white-space: nowrap;
+	}
+	/* active category first, so it is visible without swiping */
+	.profax-shop-nav li.current-menu-item {
+		order: -1;
+	}
 }
 
 /* footer */
@@ -266,13 +319,13 @@ body a.added_to_cart:visited {
 	flex: 1 0 auto;
 	width: 100%;
 }
-.profax-shop-nav a,
-.profax-shop-nav ul.menu li a {
-	color: #3088E0;
-}
-.profax-shop-nav a:hover,
-.profax-shop-nav ul.menu li a:hover {
-	color: #40D0FF;
+/* content uses the same box as search and category pills, so all left edges line up */
+#content .col-full {
+	max-width: 1020px;
+	box-sizing: border-box;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0 20px;
 }
 .header-widget-region .col-full {
 	max-width: 1020px;
@@ -384,4 +437,97 @@ body a.added_to_cart:visited {
 		font-size: 40px;
 		padding: 0;
 	}
+}
+
+/* product search (Ajax Search Lite): rounded field matching the category pills.
+   #page raises specificity above the plugin's #ajaxsearchlite1 rules. */
+#page div.asl_w {
+	background: transparent !important;
+	box-shadow: none !important;
+}
+#page div.asl_w .probox {
+	align-items: center;
+	height: 40px !important;
+	padding: 0 4px 0 0;
+	border: 1px solid rgba(80, 168, 255, 0.35) !important;
+	border-radius: 999px !important;
+	background-color: #FFF !important;
+	box-shadow: none !important;
+	box-sizing: border-box;
+}
+#page div.asl_w .probox:focus-within {
+	border-color: #50A8FF !important;
+}
+#page div.asl_w .probox .proinput {
+	margin: 0 0 0 1em;
+	align-self: stretch;
+	display: flex;
+	align-items: center;
+}
+#page div.asl_w .probox .proinput form {
+	width: 100%;
+}
+#page div.asl_w .probox .proinput input {
+	/* zimi sits high (ascent 11px, descent 4px at 15px): shift text 2px down to center it optically */
+	height: 38px !important;
+	box-sizing: border-box !important;
+	padding: 4px 0 0 !important;
+	line-height: 34px !important;
+	font-family: zimi, zimiicons, sans-serif !important;
+	font-size: 15px !important;
+	color: #000 !important;
+}
+#page div.asl_w .probox .proinput input::placeholder {
+	font-family: zimi, zimiicons, sans-serif !important;
+	color: rgba(0, 0, 0, 0.5) !important;
+}
+#page div.asl_w .probox .prosettings {
+	display: none !important;
+}
+#page div.asl_w .probox .promagnifier {
+	width: 32px !important;
+	height: 32px !important;
+	border-radius: 50% !important;
+	background: rgba(80, 168, 255, 0.25) !important;
+	box-shadow: none !important;
+}
+#page div.asl_w .probox .promagnifier:hover,
+#page div.asl_w .probox .promagnifier:focus {
+	background: #1088FF !important;
+}
+#page div.asl_w .probox .promagnifier:hover .innericon svg,
+#page div.asl_w .probox .promagnifier:focus .innericon svg {
+	fill: #FFF !important;
+}
+#page div.asl_w .probox .promagnifier .innericon svg {
+	width: 18px !important;
+	height: 32px !important;
+	fill: #3088E0 !important;
+}
+#page div.asl_w .probox .proloading,
+#page div.asl_w .probox .proclose {
+	width: 32px !important;
+	height: 32px !important;
+}
+
+/* category/shop archive header: title and description left-aligned, without Storefront's 6em bottom padding */
+#main .woocommerce-products-header,
+#main .woocommerce-products-header__title,
+#main .woocommerce-products-header .term-description {
+	text-align: left;
+}
+#main .woocommerce-products-header {
+	padding-bottom: 0;
+}
+
+/* lists in page content: bullets on the content edge instead of Storefront's 3em indent */
+.entry-content > ul,
+.entry-content > ol {
+	margin-left: 1.2em;
+}
+
+/* product titles in the catalog: half of the global 3em heading margin, medium weight (Zimi Regular) */
+ul.products li.product .woocommerce-loop-product__title {
+	margin-top: 1.5em !important;
+	font-weight: 500 !important;
 }
