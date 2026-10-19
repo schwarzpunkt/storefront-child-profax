@@ -491,3 +491,30 @@ function profax_front_klassen() {
 	}
 	echo '</ul></section>';
 }
+
+// Random selection of featured (star in the backend) products from the given categories
+function profax_front_featured_ids( $categories, $limit = 4 ) {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return array();
+	}
+	return wc_get_products( array(
+		'featured'   => true,
+		'category'   => $categories,
+		'status'     => 'publish',
+		'visibility' => 'catalog',
+		'limit'      => $limit,
+		'orderby'    => 'rand',
+		'return'     => 'ids',
+	) );
+}
+
+// Featured Lernhefte in the normal catalog grid; the selection changes when a page cache is renewed
+function profax_front_featured() {
+	$ids = profax_front_featured_ids( array( 'lernhefte-fuer-profax-lerngeraet', 'lernhefte-fuer-profaxli-lerngeraet' ) );
+	if ( ! $ids ) {
+		return;
+	}
+	echo '<section class="profax-front-featured"><h2>' . esc_html__( 'Beliebte Lernhefte', 'storefront-child-profax' ) . '</h2>';
+	echo do_shortcode( '[products ids="' . implode( ',', array_map( 'intval', $ids ) ) . '" orderby="post__in" columns="4" cache="false"]' );
+	echo '</section>';
+}

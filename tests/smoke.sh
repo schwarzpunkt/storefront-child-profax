@@ -99,7 +99,7 @@ for target in $(grep -oE 'class="skip-link[^"]*" href="#[^"]+"' <<<"$HOME_HTML" 
 	assert_contains "$HOME_HTML" "id=\"$target\"" "skip link target #$target exists"
 done
 if [ "$HAS_WP" = 1 ]; then
-	NOWC="$(wp_eval --skip-plugins=woocommerce 'ob_start(); profax_site_header(); profax_site_footer(); profax_front_device_cards( profax_front_devices() ); echo strpos( ob_get_clean(), "profax-site-header" ) !== false ? "HEADER-OK" : "NO-HEADER";')"
+	NOWC="$(wp_eval --skip-plugins=woocommerce 'ob_start(); profax_site_header(); profax_site_footer(); profax_front_device_cards( profax_front_devices() ); profax_front_klassen(); profax_front_featured(); echo strpos( ob_get_clean(), "profax-site-header" ) !== false ? "HEADER-OK" : "NO-HEADER";')"
 	assert_contains "$NOWC" "HEADER-OK" "header and front page sections render with WooCommerce inactive"
 	assert_not_contains "$NOWC" "PHPWARN" "no PHP warning with WooCommerce inactive"
 fi
@@ -120,7 +120,14 @@ assert_contains "$KLASSEN" '<h2>Lernhefte nach Klasse</h2>' "class row title"
 assert_equals "$(grep -oE '<a [^>]*>[^<]+</a>' <<<"$KLASSEN" | sed -E 's/<[^>]+>//g' | paste -sd'|' -)" "Vorschule|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse|8. Klasse|9. Klasse|IF" "class pills order and labels (empty values hidden)"
 assert_contains "$KLASSEN" "href=\"$SHOP/shop/?filter_klasse=vorschule\"" "class pill links to filtered shop"
 assert_equals "$(curl -s "$SHOP/shop/?filter_klasse=if" | grep -c 'class="product type-product')" "12" "IF filter returns products"
+FEATURED="$(front_section profax-front-featured)"
+assert_contains "$FEATURED" '<h2>Beliebte Lernhefte</h2>' "featured section title"
+assert_equals "$(grep -o '<li class="product type-product' <<<"$FEATURED" | wc -l | tr -d ' ')" "4" "four featured products"
+assert_equals "$(grep -o '<li class="product type-product[^"]*' <<<"$FEATURED" | grep -c ' featured ')" "4" "all shown products are featured"
+assert_equals "$(grep -o '<li class="product type-product[^"]*' <<<"$FEATURED" | grep -cE 'product_cat-lernhefte-fuer-profax(li)?-lerngeraet')" "4" "featured products are Lernhefte"
 if [ "$HAS_WP" = 1 ]; then
+	NONE="$(wp_eval 'var_dump( profax_front_featured_ids( array( "gibt-es-nicht" ) ) );')"
+	assert_contains "$NONE" 'array(0)' "no featured products -> empty list"
 	MISSING="$(wp_eval 'profax_front_device_cards( array( array( "product" => "gibt-es-nicht", "category" => "lernhefte-fuer-profax-lerngeraet" ), array( "product" => "profaxli-lerngeraet", "category" => "gibt-es-nicht" ) ) );')"
 	assert_equals "$(grep -o 'class="profax-device"' <<<"$MISSING" | wc -l | tr -d ' ')" "1" "missing product drops its card"
 	assert_not_contains "$MISSING" 'Lernhefte ansehen' "missing category drops its link"
