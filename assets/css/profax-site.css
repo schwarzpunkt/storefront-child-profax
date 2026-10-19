@@ -249,50 +249,108 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* shop navigation (product categories) */
-.profax-shop-nav ul {
+/* filter rows below the search: product categories (blue pills) on every page and,
+   on shop and category pages, classes (gray pills). Same box as the content;
+   the labels have the same width, so the pills of both rows line up. */
+.profax-shop-nav,
+.profax-klassen-filter {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5em;
+	/* direct children of #page (a flex column): without a width a short row shrinks and centers */
+	width: 100%;
+	max-width: 1020px;
+	box-sizing: border-box;
+	margin: 0 auto;
+	padding: 1em 20px 0;
+}
+.profax-klassen-filter {
+	padding-top: 0.5em;
+}
+.profax-filter-label {
+	flex: 0 0 9.5em;
+	font-size: 15px;
+	color: #3088E0;
+}
+.profax-klassen-filter .profax-filter-label {
+	color: #404040;
+}
+.profax-shop-nav ul,
+.profax-pills {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5em;
-	max-width: 1020px;
-	margin: 0 auto;
-	padding: 1em 20px 0;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
 	list-style: none;
 }
-.profax-shop-nav li {
+.profax-shop-nav li,
+.profax-pills li {
 	margin: 0;
 }
-/* categories as pills (also the class pills on the front page) */
+/* pills: categories blue, classes (here and on the front page) gray */
 .profax-shop-nav ul.menu li a,
 .profax-pills a {
 	display: block;
 	/* zimi sits high (ascent 11px, descent 4px at 15px): shift text 2px down to center it optically */
 	padding: 6.5px 0.9em 2.5px;
 	border-radius: 999px;
-	background-color: rgba(80, 168, 255, 0.25);
-	color: #3088E0;
 	font-size: 15px;
 	line-height: 1.4;
 	white-space: nowrap;
 	transition: background-color 0.125s, color 0.125s;
 }
+.profax-shop-nav ul.menu li a {
+	background-color: rgba(80, 168, 255, 0.25);
+	color: #3088E0;
+}
 .profax-shop-nav ul.menu li a:hover,
-.profax-shop-nav ul.menu li a:focus,
-.profax-pills a:hover,
-.profax-pills a:focus {
+.profax-shop-nav ul.menu li a:focus {
 	background-color: #1088FF;
 	color: #FFF;
 }
 .profax-shop-nav ul.menu li.current-menu-item a,
-.profax-shop-nav ul.menu li.current-menu-item a:hover,
-.profax-pills li.is-active a,
-.profax-pills li.is-active a:hover {
+.profax-shop-nav ul.menu li.current-menu-item a:hover {
 	background-color: #50A8FF;
 	color: #FFF;
 }
-/* mobile: one swipeable row instead of a block of links */
+.profax-pills a {
+	background-color: rgba(0, 0, 0, 0.07);
+	color: #404040;
+}
+.profax-pills a:hover,
+.profax-pills a:focus {
+	background-color: #404040;
+	color: #FFF;
+}
+.profax-pills li.is-active a,
+.profax-pills li.is-active a:hover {
+	background-color: #707070;
+	color: #FFF;
+}
+/* categories without products for the active class: dimmed, link without the class filter */
+.profax-shop-nav ul.menu li.profax-no-match a {
+	opacity: 0.45;
+}
+.profax-shop-nav ul.menu li.profax-no-match a:hover,
+.profax-shop-nav ul.menu li.profax-no-match a:focus {
+	opacity: 1;
+}
+/* mobile: label above, each row one swipeable line instead of a block of links */
 @media (max-width: 48.999rem) {
-	.profax-shop-nav ul {
+	.profax-shop-nav,
+	.profax-klassen-filter {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.25em;
+	}
+	.profax-filter-label {
+		flex: none;
+		font-size: 13px;
+	}
+	.profax-shop-nav ul,
+	.profax-klassen-filter .profax-pills {
 		flex-wrap: nowrap;
 		overflow-x: auto;
 		scrollbar-width: none;
@@ -300,15 +358,20 @@ body a.added_to_cart:visited {
 		padding-bottom: 0.25em;
 		mask-image: linear-gradient(to right, #000 calc(100% - 3em), transparent);
 	}
-	.profax-shop-nav ul::-webkit-scrollbar {
+	.profax-shop-nav ul::-webkit-scrollbar,
+	.profax-klassen-filter .profax-pills::-webkit-scrollbar {
 		display: none;
 	}
-	.profax-shop-nav li {
+	.profax-shop-nav li,
+	.profax-klassen-filter .profax-pills li {
 		flex: 0 0 auto;
 		white-space: nowrap;
 	}
-	/* active category first, so it is visible without swiping */
+	/* active category / class first, so it is visible without swiping */
 	.profax-shop-nav li.current-menu-item {
+		order: -1;
+	}
+	.profax-klassen-filter .profax-pills li.is-active {
 		order: -1;
 	}
 }
@@ -626,16 +689,6 @@ ul.products li.product .woocommerce-loop-product__title {
 		grid-template-columns: 1fr 1fr;
 	}
 }
-.profax-pills {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5em;
-	margin: 0;
-	list-style: none;
-}
-.profax-pills li {
-	margin: 0;
-}
 .profax-news {
 	display: grid;
 	grid-template-columns: 1fr;
@@ -700,44 +753,3 @@ ul.products li.product .woocommerce-loop-product__title {
 	color: #FFF;
 }
 
-/* class filter on shop and category pages (functions.php: profax_archive_klassen) */
-.profax-klassen-filter {
-	display: flex;
-	align-items: baseline;
-	gap: 0.5em;
-	margin: 1em 0 1.5em;
-}
-.profax-klassen-filter__label {
-	flex: 0 0 auto;
-	font-size: 15px;
-	color: #3088E0;
-}
-/* categories without products for the active class: dimmed, link without the class filter */
-.profax-shop-nav ul.menu li.profax-no-match a {
-	opacity: 0.45;
-}
-.profax-shop-nav ul.menu li.profax-no-match a:hover,
-.profax-shop-nav ul.menu li.profax-no-match a:focus {
-	opacity: 1;
-}
-/* mobile: one swipeable row like the category navigation */
-@media (max-width: 48.999rem) {
-	.profax-klassen-filter .profax-pills {
-		flex-wrap: nowrap;
-		overflow-x: auto;
-		scrollbar-width: none;
-		-webkit-overflow-scrolling: touch;
-		padding-bottom: 0.25em;
-		mask-image: linear-gradient(to right, #000 calc(100% - 3em), transparent);
-	}
-	.profax-klassen-filter .profax-pills::-webkit-scrollbar {
-		display: none;
-	}
-	.profax-klassen-filter .profax-pills li {
-		flex: 0 0 auto;
-	}
-	/* active class first, so it is visible without swiping */
-	.profax-klassen-filter .profax-pills li.is-active {
-		order: -1;
-	}
-}

@@ -398,6 +398,7 @@ function profax_shop_nav() {
 		return;
 	}
 	echo '<nav id="site-navigation" class="profax-shop-nav" aria-label="' . esc_attr__( 'Produktkategorien', 'storefront-child-profax' ) . '">';
+	echo '<span class="profax-filter-label">' . esc_html__( 'Produktkategorien:', 'storefront-child-profax' ) . '</span>';
 	wp_nav_menu( array(
 		'theme_location' => 'primary',
 		'container'      => false,
@@ -607,7 +608,7 @@ function profax_klassen_filter_html( $base, $terms, $active ) {
 	foreach ( $terms as $term ) {
 		$pills[ $term->slug ] = profax_klasse_label( $term );
 	}
-	$html = '<nav class="profax-klassen-filter" aria-label="' . esc_attr__( 'Klasse', 'storefront-child-profax' ) . '"><span class="profax-klassen-filter__label">' . esc_html__( 'Klasse:', 'storefront-child-profax' ) . '</span><ul class="profax-pills">';
+	$html = '<nav class="profax-klassen-filter" aria-label="' . esc_attr__( 'Klasse', 'storefront-child-profax' ) . '"><span class="profax-filter-label">' . esc_html__( 'Klasse:', 'storefront-child-profax' ) . '</span><ul class="profax-pills">';
 	foreach ( $pills as $slug => $label ) {
 		$url       = '' === (string) $slug ? $base : add_query_arg( 'filter_klasse', $slug, $base );
 		$is_active = (string) $slug === $active;
@@ -616,10 +617,10 @@ function profax_klassen_filter_html( $base, $terms, $active ) {
 	return $html . '</ul></nav>';
 }
 
-// Below the title of the shop and category pages
-add_action( 'woocommerce_archive_description', 'profax_archive_klassen', 20 );
+// On shop and category pages directly below the category navigation (priority 15), above the page title
+add_action( 'storefront_before_content', 'profax_archive_klassen', 16 );
 function profax_archive_klassen() {
-	if ( is_search() ) {
+	if ( ! function_exists( 'is_shop' ) || is_search() ) {
 		return; // the pill links would drop the search term
 	}
 	$index = profax_catalog_index();
