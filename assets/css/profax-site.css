@@ -249,8 +249,8 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* filter rows below the search: product categories (blue pills) on every page and,
-   on shop and category pages, classes (gray pills). Same box as the content;
+/* filter rows below the search: product categories on every page and,
+   on shop and category pages, classes. Same box as the content;
    the labels have the same width, so the pills of both rows line up. */
 .profax-shop-nav,
 .profax-klassen-filter {
@@ -272,9 +272,6 @@ body a.added_to_cart:visited {
 	font-size: 15px;
 	color: #3088E0;
 }
-.profax-klassen-filter .profax-filter-label {
-	color: #404040;
-}
 .profax-shop-nav ul,
 .profax-pills {
 	display: flex;
@@ -289,7 +286,7 @@ body a.added_to_cart:visited {
 .profax-pills li {
 	margin: 0;
 }
-/* pills: categories blue, classes (here and on the front page) gray */
+/* pills: categories and classes (here and on the front page) */
 .profax-shop-nav ul.menu li a,
 .profax-pills a {
 	display: block;
@@ -301,34 +298,25 @@ body a.added_to_cart:visited {
 	white-space: nowrap;
 	transition: background-color 0.125s, color 0.125s;
 }
-.profax-shop-nav ul.menu li a {
+/* :visited, otherwise "BODY a:visited" in style.css (more specific than .profax-pills a) wins */
+.profax-shop-nav ul.menu li a,
+.profax-pills a,
+.profax-pills a:visited {
 	background-color: rgba(80, 168, 255, 0.25);
 	color: #3088E0;
 }
 .profax-shop-nav ul.menu li a:hover,
-.profax-shop-nav ul.menu li a:focus {
+.profax-shop-nav ul.menu li a:focus,
+.profax-pills a:hover,
+.profax-pills a:focus {
 	background-color: #1088FF;
 	color: #FFF;
 }
 .profax-shop-nav ul.menu li.current-menu-item a,
-.profax-shop-nav ul.menu li.current-menu-item a:hover {
-	background-color: #50A8FF;
-	color: #FFF;
-}
-/* :visited, otherwise "BODY a:visited" in style.css (more specific) turns visited pills blue */
-.profax-pills a,
-.profax-pills a:visited {
-	background-color: rgba(0, 0, 0, 0.07);
-	color: #404040;
-}
-.profax-pills a:hover,
-.profax-pills a:focus {
-	background-color: #404040;
-	color: #FFF;
-}
+.profax-shop-nav ul.menu li.current-menu-item a:hover,
 .profax-pills li.is-active a,
 .profax-pills li.is-active a:hover {
-	background-color: #707070;
+	background-color: #50A8FF;
 	color: #FFF;
 }
 /* categories without products for the active class: dimmed, link without the class filter */

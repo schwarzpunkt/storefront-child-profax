@@ -173,7 +173,7 @@ POS_NAV="$(grep -bo '<nav id="site-navigation" class="profax-shop-nav"' <<<"$MAT
 POS_KLASSEN="$(grep -bo '<nav class="profax-klassen-filter"' <<<"$MATHE_HTML" | head -1 | cut -d: -f1)"
 POS_TITLE="$(grep -bo 'class="woocommerce-products-header__title' <<<"$MATHE_HTML" | head -1 | cut -d: -f1)"
 if [ -n "$POS_NAV" ] && [ -n "$POS_KLASSEN" ] && [ -n "$POS_TITLE" ] && [ "$POS_NAV" -lt "$POS_KLASSEN" ] && [ "$POS_KLASSEN" -lt "$POS_TITLE" ]; then pass "class row between category navigation and page title"; else fail "class row between category navigation and page title"; fi
-assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '\.profax-pills a,\.profax-pills a:visited \{[^}]*color: #404040;' "class pills are gray, also when visited (style.css: BODY a:visited)"
+assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '\.profax-pills a,\.profax-pills a:visited \{[^}]*background-color: rgba\(80, 168, 255, 0\.25\);color: #3088E0;' "class pills blue like the categories, also when visited (style.css: BODY a:visited)"
 MATHE3_HTML="$(get '/produktkategorie/mathematik/?filter_klasse=3')"
 MATHE3="$(klassen_row "$MATHE3_HTML")"
 assert_contains "$MATHE3" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=3\" aria-current=\"true\">3. Klasse <span class=\"profax-count\">" "active class pill"
