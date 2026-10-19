@@ -658,3 +658,29 @@ ul.products li.product .woocommerce-loop-product__title {
 		grid-template-columns: repeat(3, 1fr);
 	}
 }
+/* job notice: pill colors, whole box is the link */
+.profax-front-jobs a {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.25em 1em;
+	padding: 1em 1.25em;
+	border-radius: 8px;
+	background-color: rgba(80, 168, 255, 0.25);
+	color: #3088E0;
+	transition: background-color 0.125s, color 0.125s;
+}
+.profax-front-jobs a:hover,
+.profax-front-jobs a:focus {
+	background-color: #1088FF;
+	color: #FFF;
+}
+.profax-front-jobs strong {
+	font-weight: 500;
+	color: #000;
+}
+.profax-front-jobs a:hover strong,
+.profax-front-jobs a:focus strong {
+	color: #FFF;
+}

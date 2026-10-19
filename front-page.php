@@ -28,6 +28,7 @@ get_header(); ?>
 			profax_front_device_cards( profax_front_devices() );
 			profax_front_klassen();
 			profax_front_featured();
+			profax_front_jobs();
 			profax_front_news();
 			?>
 
