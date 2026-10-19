@@ -107,12 +107,19 @@ assert_matches "$(cat "$THEME_DIR/assets/css/profax-site.css")" 'a\.button:focus
 
 # --- Front page (docs/superpowers/specs/2026-10-19-shop-startseite-design.md) ---
 FRONT="$(sed -n '/<main id="main"/,/<\/main>/p' <<<"$HOME_HTML")"
+# one front page section, from its class to the next </section> (sections may share a line)
+front_section() { tr -d "\n" <<<"$FRONT" | grep -o "class=\"$1\".*" | sed "s|</section>.*||"; }
 assert_contains "$FRONT" '<h2>profax Lerngerät</h2>' "front page shows page content"
 assert_contains "$FRONT" 'class="profax-front-devices"' "front page device cards"
 assert_equals "$(grep -o 'class="profax-device"' <<<"$FRONT" | wc -l | tr -d ' ')" "2" "two device cards"
 for url in /produkt/profax-lerngeraet/ /produkt/profaxli-lerngeraet/ /produktkategorie/lernhefte-fuer-profax-lerngeraet/ /produktkategorie/lernhefte-fuer-profaxli-lerngeraet/; do
 	assert_contains "$FRONT" "href=\"$SHOP$url\"" "front page links to $url"
 done
+KLASSEN="$(front_section profax-front-klassen)"
+assert_contains "$KLASSEN" '<h2>Lernhefte nach Klasse</h2>' "class row title"
+assert_equals "$(grep -oE '<a [^>]*>[^<]+</a>' <<<"$KLASSEN" | sed -E 's/<[^>]+>//g' | paste -sd'|' -)" "Vorschule|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse|8. Klasse|9. Klasse|IF" "class pills order and labels (empty values hidden)"
+assert_contains "$KLASSEN" "href=\"$SHOP/shop/?filter_klasse=vorschule\"" "class pill links to filtered shop"
+assert_equals "$(curl -s "$SHOP/shop/?filter_klasse=if" | grep -c 'class="product type-product')" "12" "IF filter returns products"
 if [ "$HAS_WP" = 1 ]; then
 	MISSING="$(wp_eval 'profax_front_device_cards( array( array( "product" => "gibt-es-nicht", "category" => "lernhefte-fuer-profax-lerngeraet" ), array( "product" => "profaxli-lerngeraet", "category" => "gibt-es-nicht" ) ) );')"
 	assert_equals "$(grep -o 'class="profax-device"' <<<"$MISSING" | wc -l | tr -d ' ')" "1" "missing product drops its card"

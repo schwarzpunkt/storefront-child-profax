@@ -26,6 +26,7 @@ get_header(); ?>
 			endwhile;
 
 			profax_front_device_cards( profax_front_devices() );
+			profax_front_klassen();
 			?>
 
 		</main><!-- #main -->

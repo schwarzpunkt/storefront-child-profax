@@ -449,3 +449,45 @@ function profax_front_device_cards( $devices ) {
 		echo '<section class="profax-front-devices">' . $cards . '</section>';
 	}
 }
+
+// Values of the "Klasse" attribute that have products: Vorschule, 1-9 (numeric), other values, IF last
+function profax_klasse_terms() {
+	$terms = get_terms( array( 'taxonomy' => 'pa_klasse', 'hide_empty' => true ) );
+	if ( is_wp_error( $terms ) || ! $terms ) {
+		return array();
+	}
+	$rank = function( $term ) {
+		if ( 'vorschule' === $term->slug ) {
+			return array( 0, 0, '' );
+		}
+		if ( 'if' === $term->slug ) {
+			return array( 3, 0, '' );
+		}
+		return is_numeric( $term->slug ) ? array( 1, (int) $term->slug, '' ) : array( 2, 0, $term->name );
+	};
+	usort( $terms, function( $a, $b ) use ( $rank ) {
+		return $rank( $a ) <=> $rank( $b );
+	} );
+	return $terms;
+}
+
+function profax_klasse_label( $term ) {
+	if ( is_numeric( $term->slug ) ) {
+		/* translators: %d: school grade */
+		return sprintf( __( '%d. Klasse', 'storefront-child-profax' ), (int) $term->slug );
+	}
+	return 'if' === $term->slug ? 'IF' : $term->name;
+}
+
+// Pills linking to the shop filtered by class (WooCommerce layered nav, no attribute archives needed)
+function profax_front_klassen() {
+	if ( ! function_exists( 'wc_get_page_id' ) || ! ( $terms = profax_klasse_terms() ) ) {
+		return;
+	}
+	$shop = get_permalink( wc_get_page_id( 'shop' ) );
+	echo '<section class="profax-front-klassen"><h2>' . esc_html__( 'Lernhefte nach Klasse', 'storefront-child-profax' ) . '</h2><ul class="profax-pills">';
+	foreach ( $terms as $term ) {
+		echo '<li><a href="' . esc_url( add_query_arg( 'filter_klasse', $term->slug, $shop ) ) . '">' . esc_html( profax_klasse_label( $term ) ) . '</a></li>';
+	}
+	echo '</ul></section>';
+}
