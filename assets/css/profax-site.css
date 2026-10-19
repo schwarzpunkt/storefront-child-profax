@@ -539,8 +539,21 @@ ul.products li.product .woocommerce-loop-product__title {
 .profax-front-devices,
 .profax-front-klassen,
 .profax-front-featured,
+.profax-front-jobs,
 .profax-front-news {
 	margin: 2em 0;
+}
+/* product tiles: WooCommerce's bottom margin only between rows (one row of 4 from 768px) */
+.profax-front-featured ul.products {
+	margin-bottom: 0;
+}
+.profax-front-featured ul.products li.product:last-child {
+	margin-bottom: 0;
+}
+@media (min-width: 768px) {
+	.profax-front-featured ul.products li.product {
+		margin-bottom: 0;
+	}
 }
 /* section titles keep the global heading look (centered), with less space above */
 .profax-front-klassen h2,
