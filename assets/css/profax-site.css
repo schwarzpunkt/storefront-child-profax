@@ -542,10 +542,18 @@ ul.products li.product .woocommerce-loop-product__title {
 .profax-front-news {
 	margin: 2em 0;
 }
+/* section titles keep the global heading look (centered), with less space above */
 .profax-front-klassen h2,
 .profax-front-featured h2,
 .profax-front-news h2 {
-	margin: 0 0 0.75em;
+	margin-top: 1.5em !important;
+}
+/* card titles: left-aligned and smaller than the global h2/h3 (style.css) */
+.profax-device__title,
+.profax-news__item h3 {
+	text-align: left;
+	letter-spacing: 0;
+	color: #000;
 }
 /* cards: white with the light blue border of the search field */
 .profax-device,
@@ -566,17 +574,20 @@ ul.products li.product .woocommerce-loop-product__title {
 	flex-direction: column;
 }
 .profax-device__image {
-	display: block;
-	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 220px;
 }
 .profax-device__image img {
-	display: inline-block;
 	width: auto;
-	max-height: 220px;
+	max-height: 100%;
 	box-shadow: none !important;
 }
 .profax-device__title {
-	margin: 0.75em 0 0.5em;
+	margin: 0.75em 0 0.5em !important;
+	font-size: 1.5em;
+	line-height: 1.2;
 	font-weight: 500;
 }
 .profax-device__title a {
@@ -623,8 +634,9 @@ ul.products li.product .woocommerce-loop-product__title {
 	color: #3088E0;
 }
 .profax-news__item h3 {
-	margin: 0.25em 0 0.5em;
+	margin: 0.25em 0 0.5em !important;
 	font-size: 1em;
+	line-height: 1.3;
 	font-weight: 500;
 }
 .profax-news__item h3 a {

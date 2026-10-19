@@ -157,6 +157,7 @@ if [ "${MENUS:-0}" = "1" ]; then
 	assert_contains "$FOOTER_HTML" '<h4>Über profax</h4>' "footer heading Über profax"
 	assert_not_contains "$(sed -n '/<nav id="site-navigation" class="profax-shop-nav"/,/<\/nav>/p' <<<"$HOME_HTML")" '>p</a>' "old 'p' logo item removed from category menu"
 	assert_not_contains "$FRONT" 'display-posts-listing' "old post list removed from front page content"
+	assert_not_contains "$FRONT" 'id="stellen"' "off-screen job teaser removed from front page content (causes horizontal scrolling)"
 fi
 
 echo
