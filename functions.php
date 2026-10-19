@@ -492,20 +492,27 @@ function profax_front_klassen() {
 	echo '</ul></section>';
 }
 
-// Random selection of featured (star in the backend) products from the given categories
+// Random selection of featured (star in the backend) products from the given categories.
+// Only products the shop shows (is_visible: catalog visibility, "hide out of stock items"), so the grid is never short.
 function profax_front_featured_ids( $categories, $limit = 4 ) {
 	if ( ! function_exists( 'wc_get_products' ) ) {
 		return array();
 	}
-	return wc_get_products( array(
+	$products = wc_get_products( array(
 		'featured'   => true,
 		'category'   => $categories,
 		'status'     => 'publish',
 		'visibility' => 'catalog',
-		'limit'      => $limit,
+		'limit'      => -1,
 		'orderby'    => 'rand',
-		'return'     => 'ids',
 	) );
+	$ids = array();
+	foreach ( $products as $product ) {
+		if ( $product->is_visible() ) {
+			$ids[] = $product->get_id();
+		}
+	}
+	return array_slice( $ids, 0, $limit );
 }
 
 // Featured Lernhefte in the normal catalog grid; the selection changes when a page cache is renewed

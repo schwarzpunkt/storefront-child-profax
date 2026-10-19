@@ -136,6 +136,11 @@ if [ "${LONGEST:-99}" -le 21 ]; then pass "news excerpts at most 20 words"; else
 if [ "$HAS_WP" = 1 ]; then
 	NONE="$(wp_eval 'var_dump( profax_front_featured_ids( array( "gibt-es-nicht" ) ) );')"
 	assert_contains "$NONE" 'array(0)' "no featured products -> empty list"
+	# products the shop hides (e.g. out of stock with "hide out of stock items" on) are skipped, the rest fills up
+	HIDDEN="$(wp_eval 'add_filter( "woocommerce_product_is_visible", function( $visible, $id ) { return $visible && 0 !== $id % 2; }, 10, 2 ); $ids = profax_front_featured_ids( array( "lernhefte-fuer-profax-lerngeraet", "lernhefte-fuer-profaxli-lerngeraet" ) ); echo "COUNT=" . count( $ids ) . " EVEN=" . count( array_filter( $ids, function( $id ) { return 0 === $id % 2; } ) );')"
+	assert_contains "$HIDDEN" 'COUNT=4 EVEN=0' "hidden featured products skipped, still four shown"
+	ALLHIDDEN="$(wp_eval 'add_filter( "woocommerce_product_is_visible", "__return_false" ); profax_front_featured(); echo "END";')"
+	assert_not_contains "$ALLHIDDEN" 'Beliebte Lernhefte' "no visible featured products -> section omitted"
 	MISSING="$(wp_eval 'profax_front_device_cards( array( array( "product" => "gibt-es-nicht", "category" => "lernhefte-fuer-profax-lerngeraet" ), array( "product" => "profaxli-lerngeraet", "category" => "gibt-es-nicht" ) ) );')"
 	assert_equals "$(grep -o 'class="profax-device"' <<<"$MISSING" | wc -l | tr -d ' ')" "1" "missing product drops its card"
 	assert_not_contains "$MISSING" 'Lernhefte ansehen' "missing category drops its link"
