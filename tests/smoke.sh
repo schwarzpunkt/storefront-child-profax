@@ -108,7 +108,7 @@ assert_matches "$(cat "$THEME_DIR/assets/css/profax-site.css")" 'a\.button:focus
 # --- Front page (docs/superpowers/specs/2026-10-19-shop-startseite-design.md) ---
 FRONT="$(sed -n '/<main id="main"/,/<\/main>/p' <<<"$HOME_HTML")"
 # one front page section, from its class to the next </section> (sections may share a line)
-front_section() { tr -d "\n" <<<"$FRONT" | grep -o "class=\"$1\".*" | sed "s|</section>.*||"; }
+front_section() { tr -d "\n" <<<"$FRONT" | grep -o "<section class=\"$1\".*" | sed "s|</section>.*||"; }
 assert_contains "$FRONT" '<h2>profax Lerngerät</h2>' "front page shows page content"
 assert_contains "$FRONT" 'class="profax-front-devices"' "front page device cards"
 assert_equals "$(grep -o 'class="profax-device"' <<<"$FRONT" | wc -l | tr -d ' ')" "2" "two device cards"
@@ -128,8 +128,8 @@ assert_equals "$(grep -o '<li class="product type-product[^"]*' <<<"$FEATURED" |
 JOBS="$(front_section profax-front-jobs)"
 assert_contains "$JOBS" "href=\"$SHOP/der-profax-verlag-sucht-dich/\"" "job notice links to the job page in the shop"
 assert_contains "$JOBS" 'Der profax Verlag sucht dich!' "job notice text"
-JOBS_POS="$(grep -bo 'class="profax-front-jobs"' <<<"$FRONT" | head -1 | cut -d: -f1)"
-NEWS_POS="$(grep -bo 'class="profax-front-news"' <<<"$FRONT" | head -1 | cut -d: -f1)"
+JOBS_POS="$(grep -bo '<section class="profax-front-jobs"' <<<"$FRONT" | head -1 | cut -d: -f1)"
+NEWS_POS="$(grep -bo '<section class="profax-front-news"' <<<"$FRONT" | head -1 | cut -d: -f1)"
 if [ -n "$JOBS_POS" ] && [ -n "$NEWS_POS" ] && [ "$JOBS_POS" -lt "$NEWS_POS" ]; then pass "job notice above news"; else fail "job notice above news"; fi
 NEWS="$(front_section profax-front-news)"
 assert_contains "$NEWS" '<h2>Aktuelles</h2>' "news section title"
