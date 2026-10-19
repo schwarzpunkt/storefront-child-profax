@@ -111,12 +111,12 @@ FRONT="$(sed -n '/<main id="main"/,/<\/main>/p' <<<"$HOME_HTML")"
 front_section() { tr -d "\n" <<<"$FRONT" | grep -o "<section class=\"$1\".*" | sed "s|</section>.*||"; }
 # pill texts without the product counts, joined with |
 pill_labels() { sed -E 's| <span class="profax-count">\([0-9]+\)</span>||g' <<<"$1" | grep -oE '<a [^>]*>[^<]+</a>' | sed -E 's/<[^>]+>//g' | paste -sd'|' -; }
-# each pill count "(n)" equals the number of products on the page the pill links to
+# each pill count "(n)" equals the number of products on the page the pill links to (optional $3: cookie)
 check_counts() {
 	local ok=1 n=0 href count got
 	while IFS='|' read -r href count; do
 		n=$((n + 1))
-		got="$(curl -s "$href" | grep -c 'class="product type-product')"
+		got="$(curl -s -b "${3:-}" "$href" | grep -c 'class="product type-product')"
 		[ "$got" = "$count" ] || { ok=0; echo "  $href: pill says $count, page has $got"; }
 	done < <(grep -oE '<a href="[^"]*"[^>]*>[^<]*<span class="profax-count">\([0-9]+\)</span>' <<<"$1" | sed -E 's#<a href="([^"]*)".*\(([0-9]+)\).*#\1|\2#')
 	if [ "$ok" = 1 ] && [ "$n" -gt 0 ]; then pass "$2 ($n pills)"; else fail "$2 ($n pills)"; fi
@@ -201,6 +201,17 @@ if [ "$HAS_WP" = 1 ]; then
 	ONE="$(wp_eval 'echo profax_klassen_filter_html( home_url( "/shop/" ), array( get_term_by( "slug", "3", "pa_klasse" ) ), "" ); echo "END";')"
 	assert_not_contains "$ONE" 'profax-klassen-filter' "single class -> no class row"
 	assert_not_contains "$ONE" 'PHPWARN' "no PHP warning for single class row"
+fi
+
+# --- Private products stay out of the listings, also for logged-in admins ---
+if [ "$HAS_WP" = 1 ]; then
+	ADMIN_COOKIE="$(wp_eval '$u = get_users( array( "role" => "administrator", "number" => 1 ) ); echo "COOKIE:" . LOGGED_IN_COOKIE . "=" . rawurlencode( wp_generate_auth_cookie( $u[0]->ID, time() + 600, "logged_in" ) ) . "\n";' | grep -o 'COOKIE:.*' | cut -d: -f2-)"
+	for path in /shop/ /produktkategorie/mathematik/ '/produktkategorie/rechtschreibung/?filter_klasse=3' '/?s=logo&post_type=product'; do
+		AS_ADMIN="$(curl -s -b "$ADMIN_COOKIE" "$SHOP$path")"
+		assert_matches "$AS_ADMIN" '<body class="[^"]*logged-in' "logged in as admin on $path"
+		assert_not_contains "$(grep -o '<li class="product type-product[^"]*' <<<"$AS_ADMIN")" 'status-private' "no private products for admins on $path"
+	done
+	check_counts "$(shop_nav "$(curl -s -b "$ADMIN_COOKIE" "$SHOP/produktkategorie/mathematik/")")" "category pill counts match the linked pages for admins" "$ADMIN_COOKIE"
 fi
 
 # --- Backend changes: menus and front page content (see docs/backend-menus.md) ---

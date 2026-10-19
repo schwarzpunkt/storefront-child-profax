@@ -13,6 +13,12 @@ add_filter( 'loop_shop_per_page', function( $cols ) {
 	return 100;
 }, 20 );
 
+// Private products stay out of shop, category and product search listings, also for logged-in
+// users who may read them (administrators, shop managers); WordPress would include them otherwise
+add_action( 'woocommerce_product_query', function( $q ) {
+	$q->set( 'post_status', 'publish' );
+} );
+
 add_action( 'init', 'storefront_custom_logo' );
 function storefront_custom_logo() {
 	remove_action('storefront_before_content', 'woocommerce_breadcrumb', 10);
