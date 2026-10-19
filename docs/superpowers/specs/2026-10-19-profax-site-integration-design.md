@@ -120,7 +120,7 @@ Menü-Positionen: `profax_header_main` („Header: Hauptnavigation“), `profax_
 3. Menü „Hilfe“: Videoanleitungen, Handbücher / Zusatzmaterial, Häufig gestellte Fragen, Seminare (Hauptseite).
 4. Menü `info` umbenennen in „Über profax“, Einträge gemäss Tabelle oben.
 5. Menüs den vier Positionen zuweisen; Positionen `primary`/`handheld` können leer bleiben.
-6. Bei der Migration: `wp search-replace 'www.profaxonline.com' 'www.profax.com'` (Menü-Links) und `PROFAX_MAIN_URL` im Theme anpassen.
+6. Wenn die Hauptseite nach profax.com umzieht (das Shop-WordPress zieht nicht um): `PROFAX_MAIN_URL` im Theme und die individuellen Menü-Links im Backend anpassen.
 
 ## Test
 

@@ -15,10 +15,6 @@ add_filter( 'loop_shop_per_page', function( $cols ) {
 
 add_action( 'init', 'storefront_custom_logo' );
 function storefront_custom_logo() {
-	remove_action('storefront_header', 'storefront_site_branding', 20 );
-	remove_action('storefront_header', 'storefront_product_search', 40 );
-	remove_action('storefront_header', 'storefront_secondary_navigation', 30);
-
 	remove_action('storefront_before_content', 'woocommerce_breadcrumb', 10);
 
 	// wrap thumbnails, so that we can center them
@@ -50,9 +46,6 @@ function storefront_custom_logo() {
 
 	// remove previous/next product pagination
 	remove_action( 'woocommerce_after_single_product_summary', 'storefront_single_product_pagination', 30 );
-
-	// credits
-	remove_action('storefront_footer', 'storefront_credit', 20);
 
 	// custom profax lerngeraet reference
 	add_action( 'woocommerce_after_single_product_summary', 'custom_woocommerce_after_single_product_summary_pfg', 12 );
@@ -222,4 +215,194 @@ Das <a href="'.$link.'">profaxli Lerngerät</a> und die Logo-Hefte 1-8 bilden zu
 Das <a href="'.$link.'">profax Lerngerät</a> mit Sofortrückmeldung und Kontrollblatt ist zusammen mit den Lehrmitteln zur Rechtschreibung, zum Textverständnis, zur Mathe und zu andern Themen ein wirksames Lernsystem. Es eignet sich für alle Formen von selbstständigem Lernen: Werkstattunterricht, offener Unterricht, Förderunterricht, Nachhilfe, usw.
 		</div>';
 	}
+}
+
+// profax.com site integration: fonts, colors, header and footer matching www.profaxonline.com
+define( 'PROFAX_THEME_VERSION', wp_get_theme()->get( 'Version' ) );
+// Main site base URL; change when profaxonline.com moves to profax.com
+define( 'PROFAX_MAIN_URL', 'https://www.profaxonline.com/dech/' );
+
+add_action( 'wp_enqueue_scripts', 'profax_enqueue_assets', 20 );
+function profax_enqueue_assets() {
+	// zimi replaces Storefront's Google font
+	wp_dequeue_style( 'storefront-fonts' );
+	wp_enqueue_style( 'profax-site', get_stylesheet_directory_uri() . '/assets/css/profax-site.css', array( 'storefront-child-style' ), PROFAX_THEME_VERSION );
+	wp_enqueue_script( 'profax-nav', get_stylesheet_directory_uri() . '/assets/js/profax-nav.js', array(), PROFAX_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+}
+
+// Storefront Customizer colors, fixed in code so they match the main site.
+// Priority 20: Storefront fills in its defaults at 10.
+add_action( 'after_setup_theme', 'profax_theme_mod_colors' );
+function profax_theme_mod_colors() {
+	$colors = array(
+		'storefront_header_background_color'     => '#50A8FF',
+		'storefront_header_text_color'           => '#FFFFFF',
+		'storefront_header_link_color'           => '#FFFFFF',
+		'storefront_footer_background_color'     => '#50A8FF',
+		'storefront_footer_heading_color'        => '#FFFFFF',
+		'storefront_footer_text_color'           => '#FFFFFF',
+		'storefront_footer_link_color'           => '#FFFFFF',
+		'storefront_text_color'                  => '#000000',
+		'storefront_heading_color'               => '#000000',
+		'storefront_accent_color'                => '#3088E0',
+		'storefront_button_background_color'     => '#1088FF',
+		'storefront_button_text_color'           => '#FFFFFF',
+		'storefront_button_alt_background_color' => '#1088FF',
+		'storefront_button_alt_text_color'       => '#FFFFFF',
+		'background_color'                       => 'F8F8F8',
+	);
+	foreach ( $colors as $key => $value ) {
+		add_filter( 'theme_mod_' . $key, function() use ( $value ) {
+			return $value;
+		}, 20 );
+	}
+}
+
+add_action( 'after_setup_theme', 'profax_register_menus' );
+function profax_register_menus() {
+	register_nav_menus( array(
+		'profax_header_main'  => __( 'Header: Hauptnavigation', 'storefront-child-profax' ),
+		'profax_header_login' => __( 'Header: Login', 'storefront-child-profax' ),
+		'profax_footer_help'  => __( 'Footer: Hilfe', 'storefront-child-profax' ),
+		'profax_footer_about' => __( 'Footer: Über profax', 'storefront-child-profax' ),
+	) );
+}
+
+// Top-level items of the menu assigned to $location, [] if none is assigned
+function profax_menu_items( $location ) {
+	$locations = get_nav_menu_locations();
+	if ( empty( $locations[ $location ] ) ) {
+		return array();
+	}
+	$items = wp_get_nav_menu_items( $locations[ $location ] );
+	if ( ! $items ) {
+		return array();
+	}
+	return array_values( array_filter( $items, function( $item ) {
+		return 0 === (int) $item->menu_item_parent;
+	} ) );
+}
+
+// Links pointing to this shop are marked active on every shop page
+function profax_is_shop_link( $url ) {
+	$host = wp_parse_url( $url, PHP_URL_HOST );
+	return $host && $host === wp_parse_url( home_url(), PHP_URL_HOST );
+}
+
+function profax_menu_link( $item ) {
+	$classes = array_filter( (array) $item->classes );
+	if ( profax_is_shop_link( $item->url ) ) {
+		$classes[] = 'profax-current';
+	}
+	$attrs = ' href="' . esc_url( $item->url ) . '"';
+	if ( $classes ) {
+		$attrs .= ' class="' . esc_attr( implode( ' ', $classes ) ) . '"';
+	}
+	if ( $item->target ) {
+		$attrs .= ' target="' . esc_attr( $item->target ) . '"';
+	}
+	if ( $item->xfn ) {
+		$attrs .= ' rel="' . esc_attr( $item->xfn ) . '"';
+	}
+	return '<a' . $attrs . '>' . esc_html( $item->title ) . '</a>';
+}
+
+// zimiicons has no cart glyph, so the cart icon is an inline SVG in the same solid style
+function profax_cart_icon() {
+	return '<svg class="profax-cart__icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1 2h3.3l.8 3H23l-2.7 9.3a1 1 0 0 1-1 .7H8.4l.5 2H20v2H8.1a1 1 0 0 1-1-.8L3.7 4H1z"/><circle cx="9.5" cy="21.2" r="1.8"/><circle cx="18.5" cy="21.2" r="1.8"/></svg>';
+}
+
+function profax_cart_link() {
+	if ( ! function_exists( 'WC' ) ) {
+		return '';
+	}
+	$count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+	$html  = '<a class="profax-cart" href="' . esc_url( wc_get_cart_url() ) . '" aria-label="' . esc_attr__( 'Warenkorb', 'storefront-child-profax' ) . '">' . profax_cart_icon();
+	if ( $count > 0 ) {
+		$html .= '<span class="profax-cart__count">' . (int) $count . '</span>';
+	}
+	return $html . '</a>';
+}
+
+add_filter( 'woocommerce_add_to_cart_fragments', 'profax_cart_link_fragment' );
+function profax_cart_link_fragment( $fragments ) {
+	$fragments['a.profax-cart'] = profax_cart_link();
+	return $fragments;
+}
+
+function profax_site_header() {
+	storefront_skip_links();
+	?>
+	<header id="header" class="profax-site-header">
+		<nav id="menu1" class="topnav">
+			<div class="subLog">
+				<?php
+				foreach ( profax_menu_items( 'profax_header_login' ) as $item ) {
+					echo profax_menu_link( $item );
+				}
+				echo profax_cart_link();
+				?>
+			</div>
+			<div class="subNav">
+				<?php
+				foreach ( profax_menu_items( 'profax_header_main' ) as $item ) {
+					echo profax_menu_link( $item );
+				}
+				?>
+			</div>
+			<a class="home" href="<?php echo esc_url( PROFAX_MAIN_URL ); ?>">profax</a>
+			<a class="icon" href="#" aria-label="<?php esc_attr_e( 'Menü', 'storefront-child-profax' ); ?>" aria-expanded="false" aria-controls="menu1">&#xf0c9;</a>
+		</nav>
+	</header>
+	<?php
+}
+
+// Name of the menu assigned to $location, used as footer column heading
+function profax_menu_title( $location ) {
+	$locations = get_nav_menu_locations();
+	if ( empty( $locations[ $location ] ) ) {
+		return '';
+	}
+	$menu = wp_get_nav_menu_object( $locations[ $location ] );
+	return $menu ? $menu->name : '';
+}
+
+function profax_site_footer() {
+	?>
+	<footer class="profax-site-footer">
+		<h3><a class="home" href="<?php echo esc_url( PROFAX_MAIN_URL ); ?>">profaxonline</a></h3>
+		<nav class="fboxS">
+			<?php foreach ( array( 'profax_footer_help', 'profax_footer_about' ) as $location ) : ?>
+				<div class="f2">
+					<?php if ( $title = profax_menu_title( $location ) ) : ?>
+						<h4><?php echo esc_html( $title ); ?></h4>
+					<?php endif; ?>
+					<?php if ( $items = profax_menu_items( $location ) ) : ?>
+						<ul>
+							<?php foreach ( $items as $item ) : ?>
+								<li><?php echo profax_menu_link( $item ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				</div>
+			<?php endforeach; ?>
+		</nav>
+	</footer>
+	<?php
+}
+
+// Product categories (Storefront primary menu) as shop navigation below the header
+add_action( 'storefront_before_content', 'profax_shop_nav', 5 );
+function profax_shop_nav() {
+	if ( ! has_nav_menu( 'primary' ) ) {
+		return;
+	}
+	echo '<nav id="site-navigation" class="profax-shop-nav" aria-label="' . esc_attr__( 'Produktkategorien', 'storefront-child-profax' ) . '">';
+	wp_nav_menu( array(
+		'theme_location' => 'primary',
+		'container'      => false,
+		'depth'          => 1,
+		'fallback_cb'    => false,
+	) );
+	echo '</nav>';
 }

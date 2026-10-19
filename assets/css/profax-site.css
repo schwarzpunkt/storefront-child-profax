@@ -1,0 +1,387 @@
+/*
+ * profax.com site integration: fonts, base typography, header and footer.
+ * Values mirror www.profaxonline.com (zeitgeist.css / template.css / common.css).
+ * Fonts: use reserved exclusively for profax Verlag AG.
+ */
+
+/* fonts */
+@font-face {
+	font-family: 'zimi';
+	src: url(../fonts/zimilight.woff2) format('woff2'),
+		url(../fonts/zimilight.woff) format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+@font-face {
+	font-family: 'zimi';
+	src: url(../fonts/zimidemibold.woff2) format('woff2'),
+		url(../fonts/zimidemibold.woff) format('woff');
+	font-weight: bold;
+	font-style: normal;
+	font-display: block;
+}
+@font-face {
+	font-family: 'zimiicons';
+	src: url(../fonts/zimiicons.woff2) format('woff2'),
+		url(../fonts/zimiicons.woff) format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+/* base */
+body,
+button,
+input,
+select,
+textarea,
+label {
+	font-family: zimi, zimiicons, sans-serif;
+}
+body {
+	font-size: 14px;
+	line-height: 1.4;
+	background-color: #F8F8F8;
+	color: #000;
+}
+body a:hover,
+body a:focus {
+	color: #40D0FF;
+}
+/* keep button text white; the link rules above would otherwise win over a.button */
+body a.button:hover,
+body a.button:focus,
+body a.button:visited,
+body a.added_to_cart:focus,
+body a.added_to_cart:visited {
+	color: #FFF;
+}
+@media (min-width: 42rem) {
+	body {
+		font-size: 16px;
+	}
+}
+@media (min-width: 49rem) {
+	body {
+		font-size: 18px;
+	}
+}
+
+/* header */
+.profax-site-header {
+	position: relative;
+	width: 100%;
+	background-color: #50A8FF;
+	color: #FFF;
+}
+.profax-site-header .topnav {
+	overflow: hidden;
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 4px 0;
+}
+.profax-site-header .topnav a {
+	float: left;
+	display: block;
+	padding: 8px 16px 12px 16px;
+	font-weight: normal !important;
+	text-decoration: none !important;
+	text-align: left;
+	color: #FFF !important;
+	transition: opacity 0.125s;
+}
+.profax-site-header .topnav a:hover {
+	color: #000 !important;
+}
+.profax-site-header .topnav a.hlRed {
+	color: #E00000 !important;
+}
+.profax-site-header .topnav a.profax-current {
+	font-weight: bold !important;
+	color: #002080 !important;
+}
+.profax-site-header .topnav a.hlRed:hover,
+.profax-site-header .topnav a.profax-current:hover {
+	color: #000 !important;
+}
+.profax-site-header .subLog,
+.profax-site-header .subNav {
+	float: right;
+}
+.profax-site-header .subNav {
+	clear: both;
+	font-size: 18px;
+}
+.profax-site-header .subLog a {
+	padding: 4px 16px 0 16px !important;
+	color: #404040 !important;
+}
+.profax-site-header .subLog a:hover {
+	color: #FFF !important;
+}
+.profax-site-header .subLog a:not(.profax-cart)::before {
+	content: '\f090\00a0 ';
+}
+.profax-cart__icon {
+	vertical-align: -0.125em;
+}
+.profax-cart__count {
+	margin-left: 0.25em;
+	font-size: 0.75em;
+	position: relative;
+	top: -0.6em;
+	line-height: 0;
+}
+.profax-site-header a.home {
+	margin-top: -10px;
+	padding: 0 14px !important;
+	font-size: 15px;
+}
+.profax-site-header .topnav a.icon {
+	display: none;
+	font-size: 15px;
+}
+.profax-site-header .topnav a.icon:hover {
+	color: #FFF !important;
+}
+
+@media screen and (max-width: 48.999rem) {
+	.profax-site-header .subNav {
+		float: left;
+		padding-top: 0;
+	}
+	.profax-site-header .topnav a {
+		padding: 6px 0 6px 32px;
+	}
+	.profax-site-header .subNav a {
+		display: none;
+	}
+	.profax-site-header .topnav a.icon {
+		display: block;
+		float: right;
+		padding: 8px 16px 0 16px;
+	}
+	.profax-site-header .topnav a.home {
+		margin-top: 8px;
+	}
+	.profax-site-header .topnav.responsive {
+		position: relative;
+	}
+	.profax-site-header .topnav.responsive a {
+		float: none;
+		display: block;
+	}
+	.profax-site-header .topnav.responsive .icon {
+		float: right;
+	}
+	.profax-site-header .topnav.responsive .subLog {
+		margin-top: -4px;
+	}
+	.profax-site-header .topnav.responsive .subLog a {
+		float: left;
+	}
+	.profax-site-header .topnav.responsive a.home {
+		position: absolute;
+		top: 4px;
+	}
+	.profax-site-header .topnav.responsive .subNav {
+		padding-top: 32px;
+	}
+}
+@media (min-width: 35rem) {
+	.profax-site-header .topnav {
+		max-width: 97%;
+	}
+	.profax-site-header a.home,
+	.profax-site-header .topnav a.icon {
+		font-size: 20px;
+	}
+}
+@media (min-width: 42rem) {
+	.profax-site-header .topnav {
+		max-width: 98%;
+	}
+	.profax-site-header a.home,
+	.profax-site-header .topnav a.icon {
+		font-size: 24px;
+	}
+}
+@media (min-width: 49rem) {
+	.profax-site-header .topnav {
+		max-width: 62rem;
+	}
+	.profax-site-header .subLog,
+	.profax-site-header .subNav {
+		font-size: 16px;
+	}
+	.profax-site-header a.home {
+		font-size: 26px;
+		padding: 0 16px !important;
+	}
+}
+@media (min-width: 57rem) {
+	.profax-site-header a.home {
+		padding: 0 18px !important;
+	}
+}
+@media (min-width: 65rem) {
+	.profax-site-header a.home {
+		font-size: 40px;
+		padding: 0 !important;
+	}
+	.profax-site-header .subNav a:first-child {
+		padding: 8px 16px 14px 0;
+	}
+	.profax-site-header .subNav a:last-child {
+		padding: 8px 0 14px 16px;
+	}
+	.profax-site-header .subLog a:last-child {
+		padding: 4px 0 0 16px !important;
+	}
+}
+
+/* shop navigation (product categories) */
+.profax-shop-nav ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25em 1.25em;
+	max-width: 1020px;
+	margin: 0 auto;
+	padding: 1em 20px 0;
+	list-style: none;
+}
+.profax-shop-nav li {
+	margin: 0;
+}
+
+/* footer */
+/* keep the footer at the bottom on short pages, like the main site */
+#page {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+#page > .site-content {
+	flex: 1 0 auto;
+	width: 100%;
+}
+.profax-shop-nav a,
+.profax-shop-nav ul.menu li a {
+	color: #3088E0;
+}
+.profax-shop-nav a:hover,
+.profax-shop-nav ul.menu li a:hover {
+	color: #40D0FF;
+}
+.header-widget-region .col-full {
+	max-width: 1020px;
+	box-sizing: border-box;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+/* footer */
+.profax-site-footer {
+	position: relative;
+	width: 100%;
+	background-color: #50A8FF;
+	color: #FFF;
+}
+/* the main site uses content-box sizing; Storefront sets border-box */
+.profax-site-footer * {
+	box-sizing: content-box;
+}
+.profax-site-footer h3,
+.profax-site-footer h3 a.home,
+.profax-site-footer h4 {
+	line-height: 1.4;
+}
+.profax-site-footer a,
+.profax-site-footer a:visited {
+	color: #FFF !important;
+	text-decoration: none !important;
+}
+.profax-site-footer a:hover {
+	color: #000 !important;
+}
+.profax-site-footer h3 {
+	max-width: 93%;
+	margin: 13px auto 0 !important;
+	padding: 32px 12px 16px;
+	font-size: 26px;
+	font-weight: normal;
+	text-align: center !important;
+}
+.profax-site-footer h3 a.home {
+	display: block;
+	margin-top: -10px;
+	padding: 0 14px;
+	font-size: 15px;
+}
+.profax-site-footer .fboxS {
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 93%;
+	margin: 0 auto;
+	padding: 24px 0.5em 0 1em;
+}
+.profax-site-footer .f2 {
+	width: 100%;
+}
+.profax-site-footer h4 {
+	margin: 0 !important;
+	padding: 8px 0;
+	font-size: 24px;
+	font-weight: normal;
+	color: #FFF;
+}
+.profax-site-footer ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.profax-site-footer li {
+	margin: 0;
+}
+.profax-site-footer li:last-child {
+	padding-bottom: 48px;
+}
+@media (min-width: 35rem) {
+	.profax-site-footer h3 a.home {
+		font-size: 20px;
+	}
+}
+@media (min-width: 42rem) {
+	.profax-site-footer h3 a.home {
+		font-size: 24px;
+	}
+}
+@media (min-width: 49rem) {
+	.profax-site-footer h3 {
+		max-width: 62rem;
+		padding-left: 32px;
+	}
+	.profax-site-footer h3 a.home {
+		font-size: 26px;
+		padding: 0 16px;
+	}
+	.profax-site-footer .fboxS {
+		flex-wrap: nowrap;
+		max-width: 38rem;
+	}
+	.profax-site-footer .f2 {
+		width: 50%;
+		padding: 0 16px;
+	}
+}
+@media (min-width: 65rem) {
+	.profax-site-footer h3 {
+		max-width: 64rem;
+		padding-left: 40px;
+	}
+	.profax-site-footer h3 a.home {
+		font-size: 40px;
+		padding: 0;
+	}
+}
