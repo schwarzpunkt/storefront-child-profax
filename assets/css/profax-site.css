@@ -315,7 +315,9 @@ body a.added_to_cart:visited {
 	background-color: #50A8FF;
 	color: #FFF;
 }
-.profax-pills a {
+/* :visited, otherwise "BODY a:visited" in style.css (more specific) turns visited pills blue */
+.profax-pills a,
+.profax-pills a:visited {
 	background-color: rgba(0, 0, 0, 0.07);
 	color: #404040;
 }
