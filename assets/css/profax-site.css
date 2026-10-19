@@ -531,3 +531,69 @@ ul.products li.product .woocommerce-loop-product__title {
 	margin-top: 1.5em !important;
 	font-weight: 500 !important;
 }
+
+/* front page (front-page.php) */
+.profax-front-devices,
+.profax-front-klassen,
+.profax-front-featured,
+.profax-front-news {
+	margin: 2em 0;
+}
+.profax-front-klassen h2,
+.profax-front-featured h2,
+.profax-front-news h2 {
+	margin: 0 0 0.75em;
+}
+/* cards: white with the light blue border of the search field */
+.profax-device,
+.profax-news__item {
+	box-sizing: border-box;
+	border: 1px solid rgba(80, 168, 255, 0.35);
+	border-radius: 8px;
+	background-color: #FFF;
+	padding: 1.25em;
+}
+.profax-front-devices {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+.profax-device {
+	display: flex;
+	flex-direction: column;
+}
+.profax-device__image {
+	display: block;
+	text-align: center;
+}
+.profax-device__image img {
+	display: inline-block;
+	width: auto;
+	max-height: 220px;
+	box-shadow: none !important;
+}
+.profax-device__title {
+	margin: 0.75em 0 0.5em;
+	font-weight: 500;
+}
+.profax-device__title a {
+	color: #000;
+}
+.profax-device p {
+	margin: 0 0 1em;
+}
+.profax-device p.profax-device__links {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5em 1.25em;
+	margin: auto 0 0;
+}
+.profax-device__more {
+	color: #3088E0;
+}
+@media (min-width: 42rem) {
+	.profax-front-devices {
+		grid-template-columns: 1fr 1fr;
+	}
+}

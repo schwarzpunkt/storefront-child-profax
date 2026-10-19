@@ -406,3 +406,46 @@ function profax_shop_nav() {
 	) );
 	echo '</nav>';
 }
+
+/*
+ * Front page (front-page.php): device cards, class pills, featured Lernhefte, news.
+ * Products and categories are looked up by slug, IDs differ between local and live.
+ */
+
+function profax_front_devices() {
+	return array(
+		array( 'product' => 'profax-lerngeraet', 'category' => 'lernhefte-fuer-profax-lerngeraet' ),
+		array( 'product' => 'profaxli-lerngeraet', 'category' => 'lernhefte-fuer-profaxli-lerngeraet' ),
+	);
+}
+
+// One card per device; a missing product drops its card, a missing category its link
+function profax_front_device_cards( $devices ) {
+	if ( ! function_exists( 'wc_get_product' ) ) {
+		return;
+	}
+	$cards = '';
+	foreach ( $devices as $device ) {
+		$post    = get_page_by_path( $device['product'], OBJECT, 'product' );
+		$product = $post && 'publish' === $post->post_status ? wc_get_product( $post ) : null;
+		if ( ! $product ) {
+			continue;
+		}
+		$url   = get_permalink( $product->get_id() );
+		$term  = get_term_by( 'slug', $device['category'], 'product_cat' );
+		$cards .= '<article class="profax-device">';
+		$cards .= '<a class="profax-device__image" href="' . esc_url( $url ) . '" tabindex="-1" aria-hidden="true">' . $product->get_image( 'shop_catalog' ) . '</a>';
+		$cards .= '<h2 class="profax-device__title"><a href="' . esc_url( $url ) . '">' . esc_html( $product->get_name() ) . '</a></h2>';
+		if ( $text = wp_strip_all_tags( $product->get_short_description() ) ) {
+			$cards .= '<p>' . esc_html( $text ) . '</p>';
+		}
+		$cards .= '<p class="profax-device__links"><a class="button" href="' . esc_url( $url ) . '">' . esc_html__( 'Gerät ansehen', 'storefront-child-profax' ) . '</a>';
+		if ( $term && ! is_wp_error( $link = get_term_link( $term ) ) ) {
+			$cards .= ' <a class="profax-device__more" href="' . esc_url( $link ) . '">' . esc_html__( 'Lernhefte ansehen', 'storefront-child-profax' ) . '</a>';
+		}
+		$cards .= '</p></article>';
+	}
+	if ( $cards ) {
+		echo '<section class="profax-front-devices">' . $cards . '</section>';
+	}
+}

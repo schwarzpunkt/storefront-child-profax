@@ -19,6 +19,16 @@ get() {
 	printf '%s' "${out%$'\n'*}"
 }
 
+# WP-CLI eval against the local site; PHP notices/warnings are printed as "PHPWARN: ..." (deprecations ignored)
+WP_PHAR="/Applications/Local.app/Contents/Resources/extraResources/bin/wp-cli/wp-cli.phar"
+SOCK="$(find "$HOME/Library/Application Support/Local/run" -name mysqld.sock 2>/dev/null | head -1)"
+HAS_WP=0; [ -n "$PHP" ] && [ -f "$WP_PHAR" ] && [ -n "$SOCK" ] && HAS_WP=1
+wp_eval() {
+	local code="${*: -1}" args=("${@:1:$#-1}")
+	WP_CLI_CACHE_DIR="${TMPDIR:-/tmp}/wp-cli-cache" "$PHP" -d mysqli.default_socket="$SOCK" "$WP_PHAR" --path="$THEME_DIR/../../.." ${args[@]+"${args[@]}"} \
+		eval 'set_error_handler( function( $no, $msg, $file, $line ) { echo "PHPWARN: $msg ($file:$line)\n"; return true; }, E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED );'"$code" 2>&1
+}
+
 status() { curl -s -o /dev/null -w '%{http_code}' "$1"; }
 
 assert_contains()     { if grep -qF -- "$2" <<<"$1"; then pass "$3"; else fail "$3"; fi; }
@@ -88,14 +98,27 @@ assert_contains "$(get /produkt/ersatzschieber-profax/)" 'storefront-sticky-add-
 for target in $(grep -oE 'class="skip-link[^"]*" href="#[^"]+"' <<<"$HOME_HTML" | grep -oE '#[^"]+' | tr -d '#'); do
 	assert_contains "$HOME_HTML" "id=\"$target\"" "skip link target #$target exists"
 done
-WP_PHAR="/Applications/Local.app/Contents/Resources/extraResources/bin/wp-cli/wp-cli.phar"
-SOCK="$(find "$HOME/Library/Application Support/Local/run" -name mysqld.sock 2>/dev/null | head -1)"
-if [ -n "$PHP" ] && [ -f "$WP_PHAR" ] && [ -n "$SOCK" ]; then
-	NOWC="$(WP_CLI_CACHE_DIR="${TMPDIR:-/tmp}/wp-cli-cache" "$PHP" -d mysqli.default_socket="$SOCK" "$WP_PHAR" --path="$THEME_DIR/../../.." --skip-plugins=woocommerce \
-		eval 'ob_start(); profax_site_header(); profax_site_footer(); echo strpos( ob_get_clean(), "profax-site-header" ) !== false ? "HEADER-OK" : "NO-HEADER";' 2>&1)"
-	assert_contains "$NOWC" "HEADER-OK" "header renders with WooCommerce inactive"
+if [ "$HAS_WP" = 1 ]; then
+	NOWC="$(wp_eval --skip-plugins=woocommerce 'ob_start(); profax_site_header(); profax_site_footer(); profax_front_device_cards( profax_front_devices() ); echo strpos( ob_get_clean(), "profax-site-header" ) !== false ? "HEADER-OK" : "NO-HEADER";')"
+	assert_contains "$NOWC" "HEADER-OK" "header and front page sections render with WooCommerce inactive"
+	assert_not_contains "$NOWC" "PHPWARN" "no PHP warning with WooCommerce inactive"
 fi
 assert_matches "$(cat "$THEME_DIR/assets/css/profax-site.css")" 'a\.button:focus' "button text stays white on focus/visited"
+
+# --- Front page (docs/superpowers/specs/2026-10-19-shop-startseite-design.md) ---
+FRONT="$(sed -n '/<main id="main"/,/<\/main>/p' <<<"$HOME_HTML")"
+assert_contains "$FRONT" '<h2>profax Lerngerät</h2>' "front page shows page content"
+assert_contains "$FRONT" 'class="profax-front-devices"' "front page device cards"
+assert_equals "$(grep -o 'class="profax-device"' <<<"$FRONT" | wc -l | tr -d ' ')" "2" "two device cards"
+for url in /produkt/profax-lerngeraet/ /produkt/profaxli-lerngeraet/ /produktkategorie/lernhefte-fuer-profax-lerngeraet/ /produktkategorie/lernhefte-fuer-profaxli-lerngeraet/; do
+	assert_contains "$FRONT" "href=\"$SHOP$url\"" "front page links to $url"
+done
+if [ "$HAS_WP" = 1 ]; then
+	MISSING="$(wp_eval 'profax_front_device_cards( array( array( "product" => "gibt-es-nicht", "category" => "lernhefte-fuer-profax-lerngeraet" ), array( "product" => "profaxli-lerngeraet", "category" => "gibt-es-nicht" ) ) );')"
+	assert_equals "$(grep -o 'class="profax-device"' <<<"$MISSING" | wc -l | tr -d ' ')" "1" "missing product drops its card"
+	assert_not_contains "$MISSING" 'Lernhefte ansehen' "missing category drops its link"
+	assert_not_contains "$MISSING" 'PHPWARN' "no PHP warning for missing slugs"
+fi
 
 # --- Task 4: menu content (needs the backend menus, see docs/backend-menus.md) ---
 if [ "${MENUS:-0}" = "1" ]; then
