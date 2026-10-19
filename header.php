@@ -1,7 +1,7 @@
 <?php
 /**
- * Override of Storefront 4.6.2 header.php: the Storefront masthead is replaced
- * by the www.profaxonline.com header (profax_site_header()).
+ * Ersetzt header.php von Storefront 4.6.2: Statt des Storefront-Masthead kommt
+ * der Header von www.profaxonline.com (profax_site_header()).
  *
  * @package storefront-child-profax
  */
@@ -30,10 +30,11 @@
 
 	<?php
 	/**
-	 * Functions hooked in to storefront_before_content
+	 * An storefront_before_content gehängte Funktionen
 	 *
-	 * @hooked storefront_header_widget_region - 10
-	 * @hooked woocommerce_breadcrumb - 10
+	 * @hooked storefront_header_widget_region - 10 (Suchfeld)
+	 * @hooked profax_shop_nav - 15 (Produktkategorien)
+	 * @hooked profax_archive_klassen - 16 (Klassen-Filter)
 	 */
 	do_action( 'storefront_before_content' );
 	?>

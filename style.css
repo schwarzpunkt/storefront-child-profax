@@ -2,7 +2,7 @@
 /*
 Theme Name: Storefront profax Child Theme
 Theme URI: http://www.profax.ch
-Description: profax child theme for the Storefront theme.
+Description: profax Child-Theme für das Storefront-Theme.
 Author: mike.kronenberg@profax.ch
 Author URI: http://mike.kronenberg.org
 Template: storefront
@@ -234,7 +234,7 @@ img.attachment-shop_catalog.size-shop_catalog:hover {
 
 
 
-/* author & meta */
+/* Autor und Metadaten */
 aside.entry-meta {
 	width: 100% ! important;
     margin: 2em 0 0;
@@ -266,7 +266,7 @@ aside.entry-meta > div > div:after {
 
 
 
-/* content */
+/* Inhalt */
 .hentry.type-post .entry-content {
 	width: auto;
 }
@@ -296,7 +296,7 @@ aside.entry-meta > div > div:after {
 }
 
 
-/* square box for catalog images (max 300px, the shop_catalog size), image centered inside */
+/* Quadratische Box für Katalogbilder (max. 300 px, Grösse shop_catalog), Bild darin zentriert */
 .thumbnail_wrapper {
     position: relative;
     width: 100%;
@@ -339,7 +339,7 @@ img.attachment-shop_thumbnail {
     border-radius: 0;
 }
 
-/* buttons */
+/* Schaltflächen */
 button,
 button.alt,
 input[type="button"],
@@ -375,7 +375,7 @@ a.button:hover {
 	transform: scale(1.05);
 }
 
-/* fields */
+/* Eingabefelder */
 .input-text, input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], textarea {
 	padding: 0.25em 0.5em;
 }
@@ -390,7 +390,7 @@ body, .secondary-navigation a, .onsale, .pagination .page-numbers li .page-numbe
 }
 
 
-/* woocommerce messages */
+/* WooCommerce-Meldungen */
 .woocommerce-message .button {
 	display: none;
 }

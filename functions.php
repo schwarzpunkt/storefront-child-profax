@@ -1,20 +1,20 @@
 <?php
 /**
- * storefront child theme functions.php file.
+ * functions.php des Storefront-Child-Themes für den profax Shop.
  * @package storefront-child-profax
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Kein direkter Aufruf
 }
 
-// Display 100 products per page
+// 100 Produkte pro Seite anzeigen
 add_filter( 'loop_shop_per_page', function( $cols ) {
 	return 100;
 }, 20 );
 
-// Private products stay out of shop, category and product search listings, also for logged-in
-// users who may read them (administrators, shop managers); WordPress would include them otherwise
+// Private Produkte erscheinen nicht in Shop, Kategorien und Produktsuche, auch nicht für eingeloggte
+// Nutzer, die sie lesen dürfen (Administratoren, Shop-Manager); WordPress würde sie sonst einblenden
 add_action( 'woocommerce_product_query', function( $q ) {
 	$q->set( 'post_status', 'publish' );
 } );
@@ -23,7 +23,7 @@ add_action( 'init', 'storefront_custom_logo' );
 function storefront_custom_logo() {
 	remove_action('storefront_before_content', 'woocommerce_breadcrumb', 10);
 
-	// wrap thumbnails, so that we can center them
+	// Vorschaubilder umschliessen, damit sie zentriert werden können
 	add_action( 'woocommerce_before_shop_loop_item_title', function() {
 		echo '<div class="thumbnail_wrapper">';
 	}, 9 );
@@ -31,35 +31,35 @@ function storefront_custom_logo() {
 		echo '</div>';
 	}, 11 );
 
-	// keep the 300px catalog size until thumbnails are regenerated
+	// Katalog-Bildgrösse 300 px beibehalten, bis die Vorschaubilder neu erzeugt sind
 	add_filter( 'single_product_archive_thumbnail_size', function() {
 		return 'shop_catalog';
 	} );
 
 
 
-	// move meta to end of post
+	// Metadaten ans Ende des Beitrags verschieben
 	remove_action('storefront_post_header_before', 'storefront_post_meta', 10);
 	add_action('storefront_single_post', 'storefront_post_meta', 31);
 	add_action('storefront_loop_post', 'storefront_post_meta', 31);
 
-	// custom meta for products
+	// Eigene Metadaten für Produkte
 	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 	add_action( 'woocommerce_single_product_summary', 'custom_woocommerce_template_single_meta', 40 );
 
-	// remove "similar products"
+	// „Ähnliche Produkte“ entfernen
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
 
-	// remove previous/next product pagination
+	// Blättern zum vorherigen/nächsten Produkt entfernen
 	remove_action( 'woocommerce_after_single_product_summary', 'storefront_single_product_pagination', 30 );
 
-	// custom profax lerngeraet reference
+	// Eigener Hinweis auf das profax Lerngerät
 	add_action( 'woocommerce_after_single_product_summary', 'custom_woocommerce_after_single_product_summary_pfg', 12 );
 	add_filter( 'woocommerce_product_tabs', 'profax_remove_product_tabs', 98 );
 	function profax_remove_product_tabs( $tabs ) {
-		//unset( $tabs['description'] );      	// Remove the description tab
-		//unset( $tabs['reviews'] ); 			// Remove the reviews tab
-		unset( $tabs['additional_information'] );  	// Remove the additional information tab
+		//unset( $tabs['description'] );      	// Tab „Beschreibung“ entfernen
+		//unset( $tabs['reviews'] ); 			// Tab „Bewertungen“ entfernen
+		unset( $tabs['additional_information'] );  	// Tab „Zusätzliche Informationen“ entfernen
 
 		return $tabs;
 
@@ -154,7 +154,7 @@ function custom_woocommerce_template_single_meta() {
 
 }
 
-// Add schema.org Book data to WooCommerce's product JSON-LD for products with an ISBN SKU
+// schema.org-Book-Daten im Produkt-JSON-LD von WooCommerce ergänzen, für Produkte mit ISBN als Artikelnummer
 add_filter( 'woocommerce_structured_data_product', 'profax_structured_data_book', 10, 2 );
 function profax_structured_data_book( $markup, $product ) {
 	$sku = $product->get_sku();
@@ -191,8 +191,8 @@ function profax_structured_data_book( $markup, $product ) {
 	return $markup;
 }
 
-// Type book products as Product + Book. WooCommerce groups structured data by a
-// single @type string, so the type is only widened when the output is assembled.
+// Buch-Produkte als Product + Book auszeichnen. WooCommerce gruppiert strukturierte Daten nach
+// einem einzelnen @type-String, deshalb wird der Typ erst beim Zusammensetzen der Ausgabe erweitert.
 add_filter( 'woocommerce_structured_data_context', 'profax_structured_data_book_type', 10, 4 );
 function profax_structured_data_book_type( $context, $data, $type, $value ) {
 	if ( 'product' === $type && is_array( $value ) && 1 === count( $value ) && isset( $value[0]['isbn'] ) ) {
@@ -223,21 +223,21 @@ Das <a href="'.$link.'">profax Lerngerät</a> mit Sofortrückmeldung und Kontrol
 	}
 }
 
-// profax.com site integration: fonts, colors, header and footer matching www.profaxonline.com
+// Integration in profax.com: Schriften, Farben, Header und Footer wie auf www.profaxonline.com
 define( 'PROFAX_THEME_VERSION', wp_get_theme()->get( 'Version' ) );
-// Main site base URL; change when profaxonline.com moves to profax.com
+// Basis-URL der Hauptseite; anpassen, wenn profaxonline.com nach profax.com umzieht
 define( 'PROFAX_MAIN_URL', 'https://www.profaxonline.com/dech/' );
 
 add_action( 'wp_enqueue_scripts', 'profax_enqueue_assets', 20 );
 function profax_enqueue_assets() {
-	// zimi replaces Storefront's Google font
+	// zimi ersetzt die Google-Schrift von Storefront
 	wp_dequeue_style( 'storefront-fonts' );
 	wp_enqueue_style( 'profax-site', get_stylesheet_directory_uri() . '/assets/css/profax-site.css', array( 'storefront-child-style' ), PROFAX_THEME_VERSION );
 	wp_enqueue_script( 'profax-nav', get_stylesheet_directory_uri() . '/assets/js/profax-nav.js', array(), PROFAX_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 }
 
-// Storefront Customizer colors, fixed in code so they match the main site.
-// Priority 20: Storefront fills in its defaults at 10.
+// Farben aus dem Storefront-Customizer, fest im Code, damit sie zur Hauptseite passen.
+// Priorität 20: Storefront setzt seine Standardwerte mit 10.
 add_action( 'after_setup_theme', 'profax_theme_mod_colors' );
 function profax_theme_mod_colors() {
 	$colors = array(
@@ -274,7 +274,7 @@ function profax_register_menus() {
 	) );
 }
 
-// Top-level items of the menu assigned to $location, [] if none is assigned
+// Einträge der obersten Ebene des Menüs an $location, [] wenn keines zugewiesen ist
 function profax_menu_items( $location ) {
 	$locations = get_nav_menu_locations();
 	if ( empty( $locations[ $location ] ) ) {
@@ -289,7 +289,7 @@ function profax_menu_items( $location ) {
 	} ) );
 }
 
-// Links pointing to this shop are marked active on every shop page
+// Links auf diesen Shop werden auf jeder Shop-Seite als aktiv markiert
 function profax_is_shop_link( $url ) {
 	$host = wp_parse_url( $url, PHP_URL_HOST );
 	return $host && $host === wp_parse_url( home_url(), PHP_URL_HOST );
@@ -313,7 +313,7 @@ function profax_menu_link( $item ) {
 	return '<a' . $attrs . '>' . esc_html( $item->title ) . '</a>';
 }
 
-// zimiicons has no cart glyph, so the cart icon is an inline SVG in the same solid style
+// zimiicons hat kein Warenkorb-Symbol, deshalb ist es ein Inline-SVG im gleichen flächigen Stil
 function profax_cart_icon() {
 	return '<svg class="profax-cart__icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M1 2h3.3l.8 3H23l-2.7 9.3a1 1 0 0 1-1 .7H8.4l.5 2H20v2H8.1a1 1 0 0 1-1-.8L3.7 4H1z"/><circle cx="9.5" cy="21.2" r="1.8"/><circle cx="18.5" cy="21.2" r="1.8"/></svg>';
 }
@@ -336,7 +336,7 @@ function profax_cart_link_fragment( $fragments ) {
 	return $fragments;
 }
 
-// Storefront's skip links, but "Skip to navigation" only where the category navigation is shown
+// Skip-Links von Storefront, „Zur Navigation springen“ aber nur, wo die Kategorie-Navigation erscheint
 function profax_skip_links() {
 	if ( profax_show_shop_nav() ) {
 		echo '<a class="skip-link screen-reader-text" href="#site-navigation">' . esc_html__( 'Skip to navigation', 'storefront' ) . '</a>';
@@ -371,7 +371,7 @@ function profax_site_header() {
 	<?php
 }
 
-// Name of the menu assigned to $location, used as footer column heading
+// Name des Menüs an $location, dient als Spaltenüberschrift im Footer
 function profax_menu_title( $location ) {
 	$locations = get_nav_menu_locations();
 	if ( empty( $locations[ $location ] ) ) {
@@ -405,9 +405,9 @@ function profax_site_footer() {
 	<?php
 }
 
-// Category navigation only on the front page and WooCommerce pages (shop, categories, tags, products,
-// product search, cart, checkout, account); not on content pages, the blog or the general search.
-// The search field (header widget region) stays on every page.
+// Kategorie-Navigation nur auf der Startseite und auf WooCommerce-Seiten (Shop, Kategorien, Schlagwörter,
+// Produkte, Produktsuche, Warenkorb, Kasse, Konto); nicht auf Inhaltsseiten, im Blog und in der allgemeinen
+// Suche. Das Suchfeld (Header-Widget-Bereich) bleibt auf jeder Seite.
 function profax_show_shop_nav() {
 	if ( ! has_nav_menu( 'primary' ) ) {
 		return false;
@@ -418,7 +418,7 @@ function profax_show_shop_nav() {
 	return function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() );
 }
 
-// Product categories (Storefront primary menu) as shop navigation below the search (priority 10)
+// Produktkategorien (primäres Storefront-Menü) als Shop-Navigation unter dem Suchfeld (Priorität 10)
 add_action( 'storefront_before_content', 'profax_shop_nav', 15 );
 function profax_shop_nav() {
 	if ( ! profax_show_shop_nav() ) {
@@ -436,8 +436,8 @@ function profax_shop_nav() {
 }
 
 /*
- * Front page (front-page.php): device cards, class pills, featured Lernhefte, news.
- * Products and categories are looked up by slug, IDs differ between local and live.
+ * Startseite (front-page.php): Geräte-Karten, Klassen-Pills, beliebte Lernhefte, Aktuelles.
+ * Produkte und Kategorien werden über den Slug gesucht, die IDs unterscheiden sich lokal und live.
  */
 
 function profax_front_devices() {
@@ -447,7 +447,7 @@ function profax_front_devices() {
 	);
 }
 
-// One card per device; a missing product drops its card, a missing category its link
+// Eine Karte pro Gerät; fehlt das Produkt, fällt die Karte weg, fehlt die Kategorie, nur ihr Link
 function profax_front_device_cards( $devices ) {
 	if ( ! function_exists( 'wc_get_product' ) ) {
 		return;
@@ -478,8 +478,8 @@ function profax_front_device_cards( $devices ) {
 	}
 }
 
-// Products shown in the catalog (published, catalog visibility, is_visible) with their categories
-// (incl. parent categories, keyed by term ID) and "Klasse" values (keyed by slug); built once per request
+// Im Katalog sichtbare Produkte (veröffentlicht, Katalog-Sichtbarkeit, is_visible) mit ihren Kategorien
+// (inkl. übergeordneter, nach Term-ID) und „Klasse“-Werten (nach Slug); einmal pro Seitenaufruf aufgebaut
 function profax_catalog_index() {
 	static $index = null;
 	if ( null !== $index ) {
@@ -509,7 +509,7 @@ function profax_catalog_index() {
 	return $index;
 }
 
-// "Klasse" values of the given products: Vorschule, 1-9 (numeric), other values, IF last
+// „Klasse“-Werte der angegebenen Produkte: Vorschule, 1–9 (numerisch), übrige Werte, IF zuletzt
 function profax_klasse_terms( $ids ) {
 	$terms = array();
 	foreach ( profax_catalog_index()['klassen'] as $slug => $klasse_ids ) {
@@ -534,13 +534,13 @@ function profax_klasse_terms( $ids ) {
 
 function profax_klasse_label( $term ) {
 	if ( is_numeric( $term->slug ) ) {
-		/* translators: %d: school grade */
+		/* translators: %d: Schulklasse */
 		return sprintf( __( '%d. Klasse', 'storefront-child-profax' ), (int) $term->slug );
 	}
 	return 'if' === $term->slug ? 'IF' : $term->name;
 }
 
-// Pills linking to the shop filtered by class (WooCommerce layered nav, no attribute archives needed)
+// Pills, die auf den nach Klasse gefilterten Shop verlinken (WooCommerce-Filter, ohne Attribut-Archive)
 function profax_front_klassen() {
 	if ( ! function_exists( 'wc_get_page_id' ) || ! ( $terms = profax_klasse_terms( profax_catalog_index()['ids'] ) ) ) {
 		return;
@@ -553,8 +553,8 @@ function profax_front_klassen() {
 	echo '</ul></section>';
 }
 
-// Random selection of featured (star in the backend) products from the given categories.
-// Only products the shop shows (is_visible: catalog visibility, "hide out of stock items"), so the grid is never short.
+// Zufällige Auswahl empfohlener Produkte (Stern im Backend) aus den angegebenen Kategorien.
+// Nur Produkte, die der Shop zeigt (is_visible: Katalog-Sichtbarkeit, „Nicht vorrätige ausblenden“), damit das Raster nie zu kurz ist.
 function profax_front_featured_ids( $categories, $limit = 4 ) {
 	if ( ! function_exists( 'wc_get_products' ) ) {
 		return array();
@@ -576,7 +576,7 @@ function profax_front_featured_ids( $categories, $limit = 4 ) {
 	return array_slice( $ids, 0, $limit );
 }
 
-// Featured Lernhefte in the normal catalog grid; the selection changes when a page cache is renewed
+// Empfohlene Lernhefte im normalen Katalog-Raster; mit Seiten-Cache wechselt die Auswahl erst, wenn er erneuert wird
 function profax_front_featured() {
 	$ids = profax_front_featured_ids( array( 'lernhefte-fuer-profax-lerngeraet', 'lernhefte-fuer-profaxli-lerngeraet' ) );
 	if ( ! $ids ) {
@@ -587,7 +587,7 @@ function profax_front_featured() {
 	echo '</section>';
 }
 
-// The 3 latest posts as text cards (posts have no featured images) and a link to the blog page
+// Die 3 neusten Beiträge als Text-Karten (Beiträge haben keine Beitragsbilder) und ein Link auf die Blog-Seite
 function profax_front_news() {
 	$posts = new WP_Query( array(
 		'posts_per_page'      => 3,
@@ -616,24 +616,24 @@ function profax_front_news() {
 }
 
 /*
- * Class filter on shop and category pages (WooCommerce layered nav ?filter_klasse=<slug>),
- * combined with the category navigation: category links keep the active class.
+ * Klassen-Filter auf Shop- und Kategorieseiten (WooCommerce-Filter ?filter_klasse=<slug>),
+ * kombiniert mit der Kategorie-Navigation: Kategorie-Links behalten die aktive Klasse.
  */
 
-// Active class from ?filter_klasse, '' if none or not a class of a visible product
+// Aktive Klasse aus ?filter_klasse; '' wenn keine oder keine Klasse eines sichtbaren Produkts
 function profax_active_klasse() {
 	$slug = isset( $_GET['filter_klasse'] ) ? sanitize_title( wp_unslash( $_GET['filter_klasse'] ) ) : '';
 	return '' !== $slug && isset( profax_catalog_index()['klassen'][ $slug ] ) ? $slug : '';
 }
 
-// Number of the given products that have the class $slug
+// Anzahl der angegebenen Produkte mit der Klasse $slug
 function profax_klasse_count( $slug, $ids ) {
 	$klassen = profax_catalog_index()['klassen'];
 	return isset( $klassen[ $slug ] ) ? count( array_intersect( $klassen[ $slug ], $ids ) ) : 0;
 }
 
-// Pill row "Klassen" with "Alle (n), Vorschule (n), 1. Klasse (n) …" for the products $ids, linking to $base;
-// '' with fewer than 2 classes
+// Pill-Zeile „Klassen:“ mit „Alle (n), Vorschule (n), 1. Klasse (n) …“ für die Produkte $ids, Links auf $base;
+// '' bei weniger als 2 Klassen
 function profax_klassen_filter_html( $base, $terms, $active, $ids = array() ) {
 	if ( count( $terms ) < 2 ) {
 		return '';
@@ -653,11 +653,11 @@ function profax_klassen_filter_html( $base, $terms, $active, $ids = array() ) {
 	return $html . '</ul></nav>';
 }
 
-// On shop and category pages directly below the category navigation (priority 15), above the page title
+// Auf Shop- und Kategorieseiten direkt unter der Kategorie-Navigation (Priorität 15), über dem Seitentitel
 add_action( 'storefront_before_content', 'profax_archive_klassen', 16 );
 function profax_archive_klassen() {
 	if ( ! function_exists( 'is_shop' ) || is_search() ) {
-		return; // the pill links would drop the search term
+		return; // die Pill-Links würden den Suchbegriff verlieren
 	}
 	$index = profax_catalog_index();
 	if ( is_shop() ) {
@@ -675,7 +675,7 @@ function profax_archive_klassen() {
 	}
 }
 
-// Product count after a pill text: " (n)"
+// Produktanzahl nach dem Pill-Text: " (n)"
 function profax_count_html( $n ) {
 	return ' <span class="profax-count">(' . (int) $n . ')</span>';
 }
@@ -684,8 +684,8 @@ function profax_is_shop_nav( $args ) {
 	return ! empty( $args->theme_location ) && 'primary' === $args->theme_location;
 }
 
-// Visible products a category navigation item stands for (category incl. subcategories, "Alle" = shop page);
-// null for other items
+// Sichtbare Produkte, für die ein Eintrag der Kategorie-Navigation steht (Kategorie inkl. Unterkategorien,
+// „Alle“ = Shop-Seite); null für andere Einträge
 function profax_shop_nav_item_ids( $item ) {
 	$index = profax_catalog_index();
 	if ( 'product_cat' === $item->object ) {
@@ -697,8 +697,8 @@ function profax_shop_nav_item_ids( $item ) {
 	return null;
 }
 
-// Category navigation item with an active class: true = has products of that class, false = none,
-// null = not affected (no active class, other menu, other item type)
+// Eintrag der Kategorie-Navigation bei aktiver Klasse: true = hat Produkte dieser Klasse, false = keine,
+// null = nicht betroffen (keine aktive Klasse, anderes Menü, anderer Eintragstyp)
 function profax_shop_nav_klasse_match( $item, $args ) {
 	if ( ! profax_is_shop_nav( $args ) || ! ( $klasse = profax_active_klasse() ) || null === ( $ids = profax_shop_nav_item_ids( $item ) ) ) {
 		return null;
@@ -706,7 +706,7 @@ function profax_shop_nav_klasse_match( $item, $args ) {
 	return (bool) array_intersect( $ids, profax_catalog_index()['klassen'][ $klasse ] );
 }
 
-// Count of the linked page; dimmed categories (no products of the active class) get none, their link drops the filter
+// Anzahl der verlinkten Seite; abgeschwächte Kategorien (keine Produkte der aktiven Klasse) bekommen keine, ihr Link lässt den Filter weg
 add_filter( 'nav_menu_item_title', 'profax_shop_nav_count', 10, 3 );
 function profax_shop_nav_count( $title, $item, $args ) {
 	if ( ! profax_is_shop_nav( $args ) || null === ( $ids = profax_shop_nav_item_ids( $item ) ) ) {

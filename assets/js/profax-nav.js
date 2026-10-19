@@ -1,4 +1,4 @@
-// Mobile header menu toggle, mirrors www.profaxonline.com
+// Menü-Schalter im Header auf dem Handy, wie auf www.profaxonline.com
 ( function() {
 	var toggle = document.querySelector( '.profax-site-header a.icon' );
 	if ( ! toggle ) {

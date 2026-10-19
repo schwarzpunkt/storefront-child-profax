@@ -1,8 +1,8 @@
 <?php
 /**
- * Shop front page: content of the static front page (maintained in the backend),
- * followed by the sections from functions.php ("Front page").
- * See docs/superpowers/specs/2026-10-19-shop-startseite-design.md
+ * Shop-Startseite: Inhalt der statischen Startseite (im Backend gepflegt),
+ * danach die Abschnitte aus functions.php („Startseite“).
+ * Siehe docs/superpowers/specs/2026-10-19-shop-startseite-design.md
  *
  * @package storefront-child-profax
  */

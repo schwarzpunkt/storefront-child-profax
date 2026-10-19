@@ -1,10 +1,10 @@
 /*
- * profax.com site integration: fonts, base typography, header and footer.
- * Values mirror www.profaxonline.com (zeitgeist.css / template.css / common.css).
- * Fonts: use reserved exclusively for profax Verlag AG.
+ * Integration in profax.com: Schriften, Grundtypografie, Header und Footer.
+ * Werte wie auf www.profaxonline.com (zeitgeist.css / template.css / common.css).
+ * Schriften: Nutzung ausschliesslich der profax Verlag AG vorbehalten.
  */
 
-/* fonts */
+/* Schriften */
 @font-face {
 	font-family: 'zimi';
 	src: url(../fonts/zimilight.woff2) format('woff2'),
@@ -38,7 +38,7 @@
 	font-display: block;
 }
 
-/* base */
+/* Grundlagen */
 body,
 button,
 input,
@@ -57,7 +57,7 @@ body a:hover,
 body a:focus {
 	color: #40D0FF;
 }
-/* keep button text white; the link rules above would otherwise win over a.button */
+/* Button-Text bleibt weiss; sonst würden die Link-Regeln oben a.button überschreiben */
 body a.button:hover,
 body a.button:focus,
 body a.button:visited,
@@ -76,7 +76,7 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* header */
+/* Header */
 .profax-site-header {
 	position: relative;
 	width: 100%;
@@ -249,14 +249,14 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* filter rows below the search: product categories (front page and WooCommerce pages) and,
-   on shop and category pages, classes. Same box as the content, title above the pills. */
+/* Filterzeilen unter dem Suchfeld: Produktkategorien (Startseite und WooCommerce-Seiten) und
+   auf Shop- und Kategorieseiten Klassen. Gleiche Box wie der Inhalt, Titel über den Pills. */
 .profax-shop-nav,
 .profax-klassen-filter {
 	display: flex;
 	flex-direction: column;
 	gap: 0.25em;
-	/* direct children of #page (a flex column): without a width a short row shrinks and centers */
+	/* direkte Kinder von #page (Flex-Spalte): ohne Breite schrumpft eine kurze Zeile und wird zentriert */
 	width: 100%;
 	max-width: 1020px;
 	box-sizing: border-box;
@@ -284,11 +284,11 @@ body a.added_to_cart:visited {
 .profax-pills li {
 	margin: 0;
 }
-/* pills: categories and classes (here and on the front page) */
+/* Pills: Kategorien und Klassen (hier und auf der Startseite) */
 .profax-shop-nav ul.menu li a,
 .profax-pills a {
 	display: block;
-	/* zimi sits high (ascent 11px, descent 4px at 15px): shift text 2px down to center it optically */
+	/* zimi sitzt hoch (Oberlänge 11px, Unterlänge 4px bei 15px): Text 2px nach unten, damit er optisch mittig ist */
 	padding: 6.5px 0.9em 2.5px;
 	border-radius: 999px;
 	font-size: 15px;
@@ -296,7 +296,7 @@ body a.added_to_cart:visited {
 	white-space: nowrap;
 	transition: background-color 0.125s, color 0.125s;
 }
-/* :visited, otherwise "BODY a:visited" in style.css (more specific than .profax-pills a) wins */
+/* :visited, sonst gewinnt "BODY a:visited" aus style.css (spezifischer als .profax-pills a) */
 .profax-shop-nav ul.menu li a,
 .profax-pills a,
 .profax-pills a:visited {
@@ -317,7 +317,7 @@ body a.added_to_cart:visited {
 	background-color: #50A8FF;
 	color: #FFF;
 }
-/* categories without products for the active class: dimmed, link without the class filter */
+/* Kategorien ohne Produkte der aktiven Klasse: abgeschwächt, Link ohne Klassen-Filter */
 .profax-shop-nav ul.menu li.profax-no-match a {
 	opacity: 0.45;
 }
@@ -325,7 +325,7 @@ body a.added_to_cart:visited {
 .profax-shop-nav ul.menu li.profax-no-match a:focus {
 	opacity: 1;
 }
-/* mobile: smaller titles, each row one swipeable line instead of a block of links */
+/* Handy: kleinere Titel, jede Zeile eine wischbare Reihe statt eines Linkblocks */
 @media (max-width: 48.999rem) {
 	.profax-filter-label {
 		font-size: 13px;
@@ -348,7 +348,7 @@ body a.added_to_cart:visited {
 		flex: 0 0 auto;
 		white-space: nowrap;
 	}
-	/* active category / class first, so it is visible without swiping */
+	/* aktive Kategorie / Klasse zuerst, damit sie ohne Wischen sichtbar ist */
 	.profax-shop-nav li.current-menu-item {
 		order: -1;
 	}
@@ -357,8 +357,8 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* footer */
-/* keep the footer at the bottom on short pages, like the main site */
+/* Footer */
+/* Footer auf kurzen Seiten unten halten, wie auf der Hauptseite */
 #page {
 	display: flex;
 	flex-direction: column;
@@ -368,7 +368,7 @@ body a.added_to_cart:visited {
 	flex: 1 0 auto;
 	width: 100%;
 }
-/* content uses the same box as search and category pills, so all left edges line up */
+/* Inhalt in derselben Box wie Suchfeld und Kategorie-Pills, damit alle linken Kanten bündig sind */
 #content .col-full {
 	max-width: 1020px;
 	box-sizing: border-box;
@@ -383,14 +383,14 @@ body a.added_to_cart:visited {
 	padding: 0 20px;
 }
 
-/* footer */
+/* Footer */
 .profax-site-footer {
 	position: relative;
 	width: 100%;
 	background-color: #50A8FF;
 	color: #FFF;
 }
-/* the main site uses content-box sizing; Storefront sets border-box */
+/* die Hauptseite nutzt content-box; Storefront setzt border-box */
 .profax-site-footer * {
 	box-sizing: content-box;
 }
@@ -488,8 +488,8 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* product search (Ajax Search Lite): rounded field matching the category pills.
-   #page raises specificity above the plugin's #ajaxsearchlite1 rules. */
+/* Produktsuche (Ajax Search Lite): abgerundetes Feld passend zu den Kategorie-Pills.
+   #page hebt die Spezifität über die #ajaxsearchlite1-Regeln des Plugins. */
 #page div.asl_w {
 	background: transparent !important;
 	box-shadow: none !important;
@@ -517,7 +517,7 @@ body a.added_to_cart:visited {
 	width: 100%;
 }
 #page div.asl_w .probox .proinput input {
-	/* zimi sits high (ascent 11px, descent 4px at 15px): shift text 2px down to center it optically */
+	/* zimi sitzt hoch (Oberlänge 11px, Unterlänge 4px bei 15px): Text 2px nach unten, damit er optisch mittig ist */
 	height: 38px !important;
 	box-sizing: border-box !important;
 	padding: 4px 0 0 !important;
@@ -559,7 +559,7 @@ body a.added_to_cart:visited {
 	height: 32px !important;
 }
 
-/* category/shop archive header: title and description left-aligned, without Storefront's 6em bottom padding */
+/* Kopf von Kategorie- und Shop-Seiten: Titel und Beschreibung linksbündig, ohne das 6em-Padding unten von Storefront */
 #main .woocommerce-products-header,
 #main .woocommerce-products-header__title,
 #main .woocommerce-products-header .term-description {
@@ -569,19 +569,19 @@ body a.added_to_cart:visited {
 	padding-bottom: 0;
 }
 
-/* lists in page content: bullets on the content edge instead of Storefront's 3em indent */
+/* Listen im Seiteninhalt: Aufzählungszeichen an der Inhaltskante statt 3em eingerückt wie bei Storefront */
 .entry-content > ul,
 .entry-content > ol {
 	margin-left: 1.2em;
 }
 
-/* product titles in the catalog: half of the global 3em heading margin, medium weight (Zimi Regular) */
+/* Produkttitel im Katalog: halber globaler Überschriften-Abstand (3em), mittlere Strichstärke (Zimi Regular) */
 ul.products li.product .woocommerce-loop-product__title {
 	margin-top: 1.5em !important;
 	font-weight: 500 !important;
 }
 
-/* front page (front-page.php) */
+/* Startseite (front-page.php) */
 .profax-front-devices,
 .profax-front-klassen,
 .profax-front-featured,
@@ -589,7 +589,7 @@ ul.products li.product .woocommerce-loop-product__title {
 .profax-front-news {
 	margin: 2em 0;
 }
-/* product tiles: WooCommerce's bottom margin only between rows (one row of 4 from 768px) */
+/* Produktkacheln: Abstand unten von WooCommerce nur zwischen Reihen (ab 768px eine Reihe mit 4) */
 .profax-front-featured ul.products {
 	margin-bottom: 0;
 }
@@ -601,20 +601,20 @@ ul.products li.product .woocommerce-loop-product__title {
 		margin-bottom: 0;
 	}
 }
-/* section titles keep the global heading look, with less space above */
+/* Abschnittstitel im globalen Überschriften-Stil, mit weniger Abstand oben */
 .profax-front-klassen h2,
 .profax-front-featured h2,
 .profax-front-news h2 {
 	margin-top: 1.5em !important;
 }
-/* card titles: left-aligned and smaller than the global h2/h3 (style.css) */
+/* Kartentitel: linksbündig und kleiner als die globalen h2/h3 (style.css) */
 .profax-device__title,
 .profax-news__item h3 {
 	text-align: left;
 	letter-spacing: 0;
 	color: #000;
 }
-/* cards: white with the light blue border of the search field */
+/* Karten: weiss mit dem hellblauen Rand des Suchfelds */
 .profax-device,
 .profax-news__item {
 	box-sizing: border-box;
@@ -707,7 +707,7 @@ ul.products li.product .woocommerce-loop-product__title {
 		grid-template-columns: repeat(3, 1fr);
 	}
 }
-/* job notice: <div class="profax-front-jobs"><a …> in the front page content (docs/backend-menus.md); pill colors, whole box is the link */
+/* Stellen-Hinweis: <div class="profax-front-jobs"><a …> im Inhalt der Startseite (docs/backend-menus.md); Pill-Farben, die ganze Box ist der Link */
 .profax-front-jobs a {
 	display: flex;
 	flex-wrap: wrap;
@@ -735,13 +735,13 @@ ul.products li.product .woocommerce-loop-product__title {
 }
 
 
-/* product count in the filter pills: "(n)" a bit lighter than the label */
+/* Produktanzahl in den Filter-Pills: "(n)" etwas heller als der Text */
 .profax-count {
 	opacity: 0.7;
 }
 
-/* intro in the front page content (<div class="profax-front-intro"><a><img></a><p>…</p></div>,
-   docs/backend-menus.md): image left, text right, 50/50; stacked on mobile, image first */
+/* Intro im Inhalt der Startseite (<div class="profax-front-intro"><a><img></a><p>…</p></div>,
+   docs/backend-menus.md): Bild links, Text rechts, 50/50; auf dem Handy untereinander, Bild zuerst */
 .profax-front-intro {
 	display: grid;
 	grid-template-columns: 1fr;
@@ -757,8 +757,8 @@ ul.products li.product .woocommerce-loop-product__title {
 .profax-front-intro p {
 	margin: 0;
 }
-/* wpautop turns the block into <a>…</a></p><p>…; the stray </p> becomes an empty paragraph,
-   which would take the second grid column and push the text into a new row */
+/* wpautop macht aus dem Block <a>…</a></p><p>…; das alleinstehende </p> wird zu einem leeren Absatz,
+   der die zweite Rasterspalte belegen und den Text in eine neue Zeile schieben würde */
 .profax-front-intro > p:empty {
 	display: none;
 }

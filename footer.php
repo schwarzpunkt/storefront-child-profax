@@ -1,7 +1,7 @@
 <?php
 /**
- * Override of Storefront 4.6.2 footer.php: the Storefront colophon is replaced
- * by the www.profaxonline.com footer (profax_site_footer()).
+ * Ersetzt footer.php von Storefront 4.6.2: Statt des Storefront-Colophon kommt
+ * der Footer von www.profaxonline.com (profax_site_footer()).
  *
  * @package storefront-child-profax
  */
