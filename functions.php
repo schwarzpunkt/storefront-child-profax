@@ -553,15 +553,3 @@ function profax_front_news() {
 	}
 	echo '</section>';
 }
-
-// Job notice, shown while the job page is published (set it to draft when the position is filled)
-function profax_front_jobs( $slug = 'der-profax-verlag-sucht-dich' ) {
-	$page = get_page_by_path( $slug );
-	if ( ! $page || 'publish' !== get_post_status( $page ) ) {
-		return;
-	}
-	echo '<section class="profax-front-jobs"><a href="' . esc_url( get_permalink( $page ) ) . '">';
-	echo '<strong>' . esc_html__( 'Der profax Verlag sucht dich!', 'storefront-child-profax' ) . '</strong> ';
-	echo '<span>' . esc_html__( 'Zur Stellenausschreibung', 'storefront-child-profax' ) . ' &rarr;</span>';
-	echo '</a></section>';
-}

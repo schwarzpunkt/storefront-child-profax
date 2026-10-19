@@ -671,7 +671,7 @@ ul.products li.product .woocommerce-loop-product__title {
 		grid-template-columns: repeat(3, 1fr);
 	}
 }
-/* job notice: pill colors, whole box is the link */
+/* job notice: <div class="profax-front-jobs"><a …> in the front page content (docs/backend-menus.md); pill colors, whole box is the link */
 .profax-front-jobs a {
 	display: flex;
 	flex-wrap: wrap;

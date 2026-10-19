@@ -80,7 +80,7 @@ Die Startseite kommt aus dem Theme-Template `front-page.php`. Oben steht weiterh
 
 1. Die Überschrift `<h2>Lernen aktuell</h2>`, den auskommentierten Block darunter (`<!--div style=… SWISSDIDAC … </center-->`) und den Shortcode `[display-posts …]` löschen. Die Beiträge erscheinen neu im Abschnitt „Aktuelles“.
 2. Im Textblock `<div style="padding: 1em 2.5em 0">` das Padding auf `1em 0 0` ändern, damit der Text bündig mit Bild und Karten steht. Alternativ das `div` durch einen normalen Absatz ersetzen.
-3. Den Block für „Der profax Verlag sucht dich!“ am Ende löschen: `<style> #stellen … </style>`, `<script> … </script>` und den Link `<a href="…/der-profax-verlag-sucht-dich/" id="stellen">…</a>`. Der Link liegt unsichtbar rechts ausserhalb der Seite (das Skript, das ihn einblendet, ist auskommentiert) und macht die Seite breiter als den Bildschirm: Auf dem Handy lässt sie sich dadurch seitlich verschieben. Den sichtbaren Stellen-Hinweis zeigt jetzt das Theme (siehe Tabelle unten).
+3. Den Block für „Der profax Verlag sucht dich!“ am Ende löschen: `<style> #stellen … </style>`, `<script> … </script>` und den Link `<a href="…/der-profax-verlag-sucht-dich/" id="stellen">…</a>`. Der Link liegt unsichtbar rechts ausserhalb der Seite (das Skript, das ihn einblendet, ist auskommentiert) und macht die Seite breiter als den Bildschirm: Auf dem Handy lässt sie sich dadurch seitlich verschieben. Stattdessen den sichtbaren Stellen-Hinweis als Block in den Inhalt setzen (siehe Tabelle unten).
 4. Aktualisieren.
 
 **Pflege der Abschnitte:**
@@ -90,7 +90,7 @@ Die Startseite kommt aus dem Theme-Template `front-page.php`. Oben steht weiterh
 | Geräte-Karten | Produkte „profax Lerngerät“ (`profax-lerngeraet`) und „profaxli Lerngerät“ (`profaxli-lerngeraet`): Beitragsbild = Kartenbild, **Kurzbeschreibung** = Kartentext. Link „Lernhefte ansehen“ führt auf die Kategorien `lernhefte-fuer-profax-lerngeraet` bzw. `lernhefte-fuer-profaxli-lerngeraet`. Die Slugs nicht ändern, sonst fällt die Karte bzw. der Link weg. |
 | Lernhefte nach Klasse | Produkt-Attribut **Klasse** (Produkte → Eigenschaften). Werte ohne Produkte werden ausgeblendet. |
 | Beliebte Lernhefte | Stern „Empfohlen“ in der Produktliste. Gezeigt werden zufällig 4 empfohlene Produkte aus den beiden Lernheft-Kategorien. Ohne empfohlene Hefte fällt der Abschnitt weg. |
-| Stellen-Hinweis „Der profax Verlag sucht dich!“ (vor „Aktuelles“) | Erscheint, solange die Seite **„Der profax Verlag sucht dich“** (Slug `der-profax-verlag-sucht-dich`) veröffentlicht ist, und verlinkt auf diese Seite. Ist die Stelle besetzt: Seite auf **Entwurf** oder **Privat** setzen, dann verschwindet der Hinweis. Den Slug nicht ändern. |
+| Stellen-Hinweis „Der profax Verlag sucht dich!“ | Im Inhalt von Seite 90, als eigene Zeile mit Leerzeilen davor und danach: `<div class="profax-front-jobs"><a href="/der-profax-verlag-sucht-dich/"><strong>Der profax Verlag sucht dich!</strong> <span>Zur Stellenausschreibung →</span></a></div>`. Das Theme liefert das Aussehen der Box (hellblau, ganze Box ist der Link). Ist die Stelle besetzt, den Block löschen. |
 | Aktuelles | Die 3 neusten Beiträge; der Auszug stammt aus dem Feld „Textauszug“ oder, wenn leer, aus dem Beitragstext (max. 20 Wörter). |
 
 ## 8. Wenn die Hauptseite von profaxonline.com nach profax.com umzieht
