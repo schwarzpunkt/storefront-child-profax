@@ -121,8 +121,11 @@ check_counts() {
 	done < <(grep -oE '<a href="[^"]*"[^>]*>[^<]*<span class="profax-count">\([0-9]+\)</span>' <<<"$1" | sed -E 's#<a href="([^"]*)".*\(([0-9]+)\).*#\1|\2#')
 	if [ "$ok" = 1 ] && [ "$n" -gt 0 ]; then pass "$2 ($n pills)"; else fail "$2 ($n pills)"; fi
 }
-assert_contains "$FRONT" '<h2>profax Lerngerät</h2>' "front page shows page content"
+assert_contains "$FRONT" '<div class="entry-content">' "front page shows page content"
 assert_contains "$FRONT" 'class="profax-front-devices"' "front page device cards"
+assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '@media \(min-width: 42rem\) \{\.profax-front-intro \{grid-template-columns: 1fr 1fr;' "intro block in the page content: image and text 50/50 from 42rem"
+assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '\.profax-front-intro > p:empty \{display: none;' "intro block ignores the empty paragraph wpautop inserts"
+assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '\.profax-front-intro \{[^}]*align-items: start;' "intro text aligned to the top of the image"
 assert_equals "$(grep -o 'class="profax-device"' <<<"$FRONT" | wc -l | tr -d ' ')" "2" "two device cards"
 for url in /produkt/profax-lerngeraet/ /produkt/profaxli-lerngeraet/ /produktkategorie/lernhefte-fuer-profax-lerngeraet/ /produktkategorie/lernhefte-fuer-profaxli-lerngeraet/; do
 	assert_contains "$FRONT" "href=\"$SHOP$url\"" "front page links to $url"
@@ -168,7 +171,8 @@ assert_equals "$(pill_labels "$MATHE")" "Alle|1. Klasse|2. Klasse|3. Klasse|4. K
 assert_contains "$MATHE" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/\" aria-current=\"true\">Alle <span class=\"profax-count\">" "Alle active without class filter"
 assert_not_contains "$(shop_nav "$MATHE_HTML")" 'profax-no-match' "no dimmed categories without class filter"
 assert_contains "$(shop_nav "$HOME_HTML")" '<span class="profax-filter-label">Produktkategorien:</span>' "category navigation labelled"
-assert_contains "$MATHE" '<span class="profax-filter-label">Klasse:</span>' "class row labelled"
+assert_contains "$MATHE" '<span class="profax-filter-label">Klassen:</span>' "class row labelled"
+assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '\.profax-shop-nav,\.profax-klassen-filter \{display: flex;flex-direction: column;' "filter titles above the pills at every width"
 POS_NAV="$(grep -bo '<nav id="site-navigation" class="profax-shop-nav"' <<<"$MATHE_HTML" | head -1 | cut -d: -f1)"
 POS_KLASSEN="$(grep -bo '<nav class="profax-klassen-filter"' <<<"$MATHE_HTML" | head -1 | cut -d: -f1)"
 POS_TITLE="$(grep -bo 'class="woocommerce-products-header__title' <<<"$MATHE_HTML" | head -1 | cut -d: -f1)"
@@ -203,6 +207,25 @@ if [ "$HAS_WP" = 1 ]; then
 	assert_not_contains "$ONE" 'PHPWARN' "no PHP warning for single class row"
 fi
 
+# --- Category navigation only on the front page and WooCommerce pages; search everywhere ---
+skip_targets_ok() {  # every skip link points to an element on the page
+	local html="$1" target
+	for target in $(grep -oE 'class="skip-link[^"]*" href="#[^"]+"' <<<"$html" | grep -oE '#[^"]+' | tr -d '#'); do
+		grep -qF "id=\"$target\"" <<<"$html" || return 1
+	done
+}
+for path in / /shop/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ /warenkorb/ /mein-konto/ '/?s=mathe&post_type=product'; do
+	PAGE="$(get "$path")"
+	assert_contains "$PAGE" 'class="profax-shop-nav"' "category navigation on $path"
+	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"
+done
+for path in /blog/ /brueche-verstehen-mit-bruechen-rechnen/ /datenzugriffsanfrage/ '/?s=mathe'; do
+	PAGE="$(get "$path")"
+	assert_not_contains "$PAGE" 'class="profax-shop-nav"' "no category navigation on $path"
+	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"
+	if skip_targets_ok "$PAGE"; then pass "skip links have targets on $path"; else fail "skip links have targets on $path"; fi
+done
+
 # --- Private products stay out of the listings, also for logged-in admins ---
 if [ "$HAS_WP" = 1 ]; then
 	ADMIN_COOKIE="$(wp_eval '$u = get_users( array( "role" => "administrator", "number" => 1 ) ); echo "COOKIE:" . LOGGED_IN_COOKIE . "=" . rawurlencode( wp_generate_auth_cookie( $u[0]->ID, time() + 600, "logged_in" ) ) . "\n";' | grep -o 'COOKIE:.*' | cut -d: -f2-)"
@@ -231,6 +254,7 @@ if [ "${MENUS:-0}" = "1" ]; then
 	assert_not_contains "$FRONT" 'display-posts-listing' "old post list removed from front page content"
 	assert_not_contains "$FRONT" 'id="stellen"' "off-screen job teaser removed from front page content (causes horizontal scrolling)"
 	assert_contains "$FRONT" '<div class="profax-front-jobs">' "job notice box in front page content"
+	assert_contains "$FRONT" '<div class="profax-front-intro">' "intro block (image and text) in front page content"
 fi
 
 echo

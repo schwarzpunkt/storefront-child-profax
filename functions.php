@@ -336,8 +336,16 @@ function profax_cart_link_fragment( $fragments ) {
 	return $fragments;
 }
 
+// Storefront's skip links, but "Skip to navigation" only where the category navigation is shown
+function profax_skip_links() {
+	if ( profax_show_shop_nav() ) {
+		echo '<a class="skip-link screen-reader-text" href="#site-navigation">' . esc_html__( 'Skip to navigation', 'storefront' ) . '</a>';
+	}
+	echo '<a class="skip-link screen-reader-text" href="#content">' . esc_html__( 'Skip to content', 'storefront' ) . '</a>';
+}
+
 function profax_site_header() {
-	storefront_skip_links();
+	profax_skip_links();
 	?>
 	<header id="header" class="profax-site-header">
 		<nav id="menu1" class="topnav">
@@ -397,10 +405,23 @@ function profax_site_footer() {
 	<?php
 }
 
+// Category navigation only on the front page and WooCommerce pages (shop, categories, tags, products,
+// product search, cart, checkout, account); not on content pages, the blog or the general search.
+// The search field (header widget region) stays on every page.
+function profax_show_shop_nav() {
+	if ( ! has_nav_menu( 'primary' ) ) {
+		return false;
+	}
+	if ( is_front_page() ) {
+		return true;
+	}
+	return function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() );
+}
+
 // Product categories (Storefront primary menu) as shop navigation below the search (priority 10)
 add_action( 'storefront_before_content', 'profax_shop_nav', 15 );
 function profax_shop_nav() {
-	if ( ! has_nav_menu( 'primary' ) ) {
+	if ( ! profax_show_shop_nav() ) {
 		return;
 	}
 	echo '<nav id="site-navigation" class="profax-shop-nav" aria-label="' . esc_attr__( 'Produktkategorien', 'storefront-child-profax' ) . '">';
@@ -611,7 +632,7 @@ function profax_klasse_count( $slug, $ids ) {
 	return isset( $klassen[ $slug ] ) ? count( array_intersect( $klassen[ $slug ], $ids ) ) : 0;
 }
 
-// Pill row "Klasse: Alle (n), Vorschule (n), 1. Klasse (n) …" for the products $ids, linking to $base;
+// Pill row "Klassen" with "Alle (n), Vorschule (n), 1. Klasse (n) …" for the products $ids, linking to $base;
 // '' with fewer than 2 classes
 function profax_klassen_filter_html( $base, $terms, $active, $ids = array() ) {
 	if ( count( $terms ) < 2 ) {
@@ -623,7 +644,7 @@ function profax_klassen_filter_html( $base, $terms, $active, $ids = array() ) {
 		$pills[ $term->slug ]  = profax_klasse_label( $term );
 		$counts[ $term->slug ] = profax_klasse_count( $term->slug, $ids );
 	}
-	$html = '<nav class="profax-klassen-filter" aria-label="' . esc_attr__( 'Klasse', 'storefront-child-profax' ) . '"><span class="profax-filter-label">' . esc_html__( 'Klasse:', 'storefront-child-profax' ) . '</span><ul class="profax-pills">';
+	$html = '<nav class="profax-klassen-filter" aria-label="' . esc_attr__( 'Klassen', 'storefront-child-profax' ) . '"><span class="profax-filter-label">' . esc_html__( 'Klassen:', 'storefront-child-profax' ) . '</span><ul class="profax-pills">';
 	foreach ( $pills as $slug => $label ) {
 		$url       = '' === (string) $slug ? $base : add_query_arg( 'filter_klasse', $slug, $base );
 		$is_active = (string) $slug === $active;

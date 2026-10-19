@@ -249,14 +249,13 @@ body a.added_to_cart:visited {
 	}
 }
 
-/* filter rows below the search: product categories on every page and,
-   on shop and category pages, classes. Same box as the content;
-   the labels have the same width, so the pills of both rows line up. */
+/* filter rows below the search: product categories (front page and WooCommerce pages) and,
+   on shop and category pages, classes. Same box as the content, title above the pills. */
 .profax-shop-nav,
 .profax-klassen-filter {
 	display: flex;
-	align-items: baseline;
-	gap: 0.5em;
+	flex-direction: column;
+	gap: 0.25em;
 	/* direct children of #page (a flex column): without a width a short row shrinks and centers */
 	width: 100%;
 	max-width: 1020px;
@@ -265,10 +264,9 @@ body a.added_to_cart:visited {
 	padding: 1em 20px 0;
 }
 .profax-klassen-filter {
-	padding-top: 0.5em;
+	padding-top: 0.75em;
 }
 .profax-filter-label {
-	flex: 0 0 9.5em;
 	font-size: 15px;
 	color: #3088E0;
 }
@@ -327,16 +325,9 @@ body a.added_to_cart:visited {
 .profax-shop-nav ul.menu li.profax-no-match a:focus {
 	opacity: 1;
 }
-/* mobile: label above, each row one swipeable line instead of a block of links */
+/* mobile: smaller titles, each row one swipeable line instead of a block of links */
 @media (max-width: 48.999rem) {
-	.profax-shop-nav,
-	.profax-klassen-filter {
-		flex-direction: column;
-		align-items: stretch;
-		gap: 0.25em;
-	}
 	.profax-filter-label {
-		flex: none;
 		font-size: 13px;
 	}
 	.profax-shop-nav ul,
@@ -610,7 +601,7 @@ ul.products li.product .woocommerce-loop-product__title {
 		margin-bottom: 0;
 	}
 }
-/* section titles keep the global heading look (centered), with less space above */
+/* section titles keep the global heading look, with less space above */
 .profax-front-klassen h2,
 .profax-front-featured h2,
 .profax-front-news h2 {
@@ -747,4 +738,32 @@ ul.products li.product .woocommerce-loop-product__title {
 /* product count in the filter pills: "(n)" a bit lighter than the label */
 .profax-count {
 	opacity: 0.7;
+}
+
+/* intro in the front page content (<div class="profax-front-intro"><a><img></a><p>…</p></div>,
+   docs/backend-menus.md): image left, text right, 50/50; stacked on mobile, image first */
+.profax-front-intro {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1em 20px;
+	align-items: start;
+	margin: 0 0 3em;
+}
+.profax-front-intro img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.profax-front-intro p {
+	margin: 0;
+}
+/* wpautop turns the block into <a>…</a></p><p>…; the stray </p> becomes an empty paragraph,
+   which would take the second grid column and push the text into a new row */
+.profax-front-intro > p:empty {
+	display: none;
+}
+@media (min-width: 42rem) {
+	.profax-front-intro {
+		grid-template-columns: 1fr 1fr;
+	}
 }
