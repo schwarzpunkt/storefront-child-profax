@@ -125,6 +125,14 @@ assert_contains "$FEATURED" '<h2>Beliebte Lernhefte</h2>' "featured section titl
 assert_equals "$(grep -o '<li class="product type-product' <<<"$FEATURED" | wc -l | tr -d ' ')" "4" "four featured products"
 assert_equals "$(grep -o '<li class="product type-product[^"]*' <<<"$FEATURED" | grep -c ' featured ')" "4" "all shown products are featured"
 assert_equals "$(grep -o '<li class="product type-product[^"]*' <<<"$FEATURED" | grep -cE 'product_cat-lernhefte-fuer-profax(li)?-lerngeraet')" "4" "featured products are Lernhefte"
+NEWS="$(front_section profax-front-news)"
+assert_contains "$NEWS" '<h2>Aktuelles</h2>' "news section title"
+assert_equals "$(grep -o 'class="profax-news__item"' <<<"$NEWS" | wc -l | tr -d ' ')" "3" "three news cards"
+assert_contains "$NEWS" "href=\"$SHOP/blog/\"" "link to all posts"
+EXCERPTS="$(grep -oE '<p class="profax-news__excerpt">[^<]*' <<<"$NEWS" | sed 's/<[^>]*>//')"
+assert_equals "$(grep -c . <<<"$EXCERPTS")" "3" "three news excerpts"
+LONGEST="$(awk '{print NF}' <<<"$EXCERPTS" | sort -n | tail -1)"
+if [ "${LONGEST:-99}" -le 21 ]; then pass "news excerpts at most 20 words"; else fail "news excerpts at most 20 words (got $LONGEST)"; fi
 if [ "$HAS_WP" = 1 ]; then
 	NONE="$(wp_eval 'var_dump( profax_front_featured_ids( array( "gibt-es-nicht" ) ) );')"
 	assert_contains "$NONE" 'array(0)' "no featured products -> empty list"
@@ -134,7 +142,7 @@ if [ "$HAS_WP" = 1 ]; then
 	assert_not_contains "$MISSING" 'PHPWARN' "no PHP warning for missing slugs"
 fi
 
-# --- Task 4: menu content (needs the backend menus, see docs/backend-menus.md) ---
+# --- Backend changes: menus and front page content (see docs/backend-menus.md) ---
 if [ "${MENUS:-0}" = "1" ]; then
 	for path in / /shop/ /produkt/ersatzschieber-profax/ /warenkorb/ /mein-konto/ /blog/; do  # /kasse/ redirects to the cart while it is empty
 		HEADER="$(get "$path" | sed -n '/<header id="header"/,/<\/header>/p')"
@@ -148,6 +156,7 @@ if [ "${MENUS:-0}" = "1" ]; then
 	assert_contains "$FOOTER_HTML" '<h4>Hilfe</h4>' "footer heading Hilfe"
 	assert_contains "$FOOTER_HTML" '<h4>Über profax</h4>' "footer heading Über profax"
 	assert_not_contains "$(sed -n '/<nav id="site-navigation" class="profax-shop-nav"/,/<\/nav>/p' <<<"$HOME_HTML")" '>p</a>' "old 'p' logo item removed from category menu"
+	assert_not_contains "$FRONT" 'display-posts-listing' "old post list removed from front page content"
 fi
 
 echo

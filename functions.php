@@ -518,3 +518,31 @@ function profax_front_featured() {
 	echo do_shortcode( '[products ids="' . implode( ',', array_map( 'intval', $ids ) ) . '" orderby="post__in" columns="4" cache="false"]' );
 	echo '</section>';
 }
+
+// The 3 latest posts as text cards (posts have no featured images) and a link to the blog page
+function profax_front_news() {
+	$posts = new WP_Query( array(
+		'posts_per_page'      => 3,
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
+	) );
+	if ( ! $posts->have_posts() ) {
+		return;
+	}
+	echo '<section class="profax-front-news"><h2>' . esc_html__( 'Aktuelles', 'storefront-child-profax' ) . '</h2><div class="profax-news">';
+	while ( $posts->have_posts() ) {
+		$posts->the_post();
+		$text = has_excerpt() ? get_the_excerpt() : strip_shortcodes( get_the_content() );
+		echo '<article class="profax-news__item">';
+		echo '<time datetime="' . esc_attr( get_the_date( 'c' ) ) . '">' . esc_html( get_the_date() ) . '</time>';
+		echo '<h3><a href="' . esc_url( get_permalink() ) . '">' . esc_html( get_the_title() ) . '</a></h3>';
+		echo '<p class="profax-news__excerpt">' . esc_html( wp_trim_words( $text, 20 ) ) . '</p>';
+		echo '</article>';
+	}
+	wp_reset_postdata();
+	echo '</div>';
+	if ( $blog = (int) get_option( 'page_for_posts' ) ) {
+		echo '<p><a class="profax-news__all" href="' . esc_url( get_permalink( $blog ) ) . '">' . esc_html__( 'Alle Beiträge', 'storefront-child-profax' ) . '</a></p>';
+	}
+	echo '</section>';
+}

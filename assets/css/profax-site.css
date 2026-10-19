@@ -610,3 +610,39 @@ ul.products li.product .woocommerce-loop-product__title {
 .profax-pills li {
 	margin: 0;
 }
+.profax-news {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+.profax-news__item {
+	padding: 1em;
+}
+.profax-news__item time {
+	font-size: 0.8em;
+	color: #3088E0;
+}
+.profax-news__item h3 {
+	margin: 0.25em 0 0.5em;
+	font-size: 1em;
+	font-weight: 500;
+}
+.profax-news__item h3 a {
+	color: #000;
+}
+.profax-news__item h3 a:hover,
+.profax-news__item h3 a:focus {
+	color: #1088FF;
+}
+.profax-news__item p {
+	margin: 0;
+	font-size: 0.9em;
+}
+.profax-front-news > p {
+	margin: 1em 0 0;
+}
+@media (min-width: 42rem) {
+	.profax-news {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
