@@ -755,3 +755,8 @@ ul.products li.product .woocommerce-loop-product__title {
 	color: #FFF;
 }
 
+
+/* product count in the filter pills: "(n)" a bit lighter than the label */
+.profax-count {
+	opacity: 0.7;
+}

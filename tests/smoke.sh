@@ -109,6 +109,18 @@ assert_matches "$(cat "$THEME_DIR/assets/css/profax-site.css")" 'a\.button:focus
 FRONT="$(sed -n '/<main id="main"/,/<\/main>/p' <<<"$HOME_HTML")"
 # one front page section, from its class to the next </section> (sections may share a line)
 front_section() { tr -d "\n" <<<"$FRONT" | grep -o "<section class=\"$1\".*" | sed "s|</section>.*||"; }
+# pill texts without the product counts, joined with |
+pill_labels() { sed -E 's| <span class="profax-count">\([0-9]+\)</span>||g' <<<"$1" | grep -oE '<a [^>]*>[^<]+</a>' | sed -E 's/<[^>]+>//g' | paste -sd'|' -; }
+# each pill count "(n)" equals the number of products on the page the pill links to
+check_counts() {
+	local ok=1 n=0 href count got
+	while IFS='|' read -r href count; do
+		n=$((n + 1))
+		got="$(curl -s "$href" | grep -c 'class="product type-product')"
+		[ "$got" = "$count" ] || { ok=0; echo "  $href: pill says $count, page has $got"; }
+	done < <(grep -oE '<a href="[^"]*"[^>]*>[^<]*<span class="profax-count">\([0-9]+\)</span>' <<<"$1" | sed -E 's#<a href="([^"]*)".*\(([0-9]+)\).*#\1|\2#')
+	if [ "$ok" = 1 ] && [ "$n" -gt 0 ]; then pass "$2 ($n pills)"; else fail "$2 ($n pills)"; fi
+}
 assert_contains "$FRONT" '<h2>profax Lerngerät</h2>' "front page shows page content"
 assert_contains "$FRONT" 'class="profax-front-devices"' "front page device cards"
 assert_equals "$(grep -o 'class="profax-device"' <<<"$FRONT" | wc -l | tr -d ' ')" "2" "two device cards"
@@ -117,7 +129,7 @@ for url in /produkt/profax-lerngeraet/ /produkt/profaxli-lerngeraet/ /produktkat
 done
 KLASSEN="$(front_section profax-front-klassen)"
 assert_contains "$KLASSEN" '<h2>Lernhefte nach Klasse</h2>' "class row title"
-assert_equals "$(grep -oE '<a [^>]*>[^<]+</a>' <<<"$KLASSEN" | sed -E 's/<[^>]+>//g' | paste -sd'|' -)" "Vorschule|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse|8. Klasse|9. Klasse|IF" "class pills order and labels (empty values hidden)"
+assert_equals "$(pill_labels "$KLASSEN")" "Vorschule|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse|8. Klasse|9. Klasse|IF" "class pills order and labels (empty values hidden)"
 assert_contains "$KLASSEN" "href=\"$SHOP/shop/?filter_klasse=vorschule\"" "class pill links to filtered shop"
 assert_equals "$(curl -s "$SHOP/shop/?filter_klasse=if" | grep -c 'class="product type-product')" "12" "IF filter returns products"
 FEATURED="$(front_section profax-front-featured)"
@@ -149,12 +161,11 @@ fi
 
 # --- Class filter on shop and category pages, combined with the category navigation ---
 klassen_row() { tr -d '\n' <<<"$1" | grep -o '<nav class="profax-klassen-filter".*' | sed 's|</nav>.*||'; }
-pill_labels() { grep -oE '<a [^>]*>[^<]+</a>' <<<"$1" | sed -E 's/<[^>]+>//g' | paste -sd'|' -; }
-shop_nav() { sed -n '/<nav id="site-navigation" class="profax-shop-nav"/,/<\/nav>/p' <<<"$1"; }
+shop_nav() { tr -d '\n' <<<"$1" | grep -o '<nav id="site-navigation" class="profax-shop-nav".*' | sed 's|</nav>.*|</nav>|'; }
 MATHE_HTML="$(get /produktkategorie/mathematik/)"
 MATHE="$(klassen_row "$MATHE_HTML")"
 assert_equals "$(pill_labels "$MATHE")" "Alle|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse" "category class pills: only classes of the category"
-assert_contains "$MATHE" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/\" aria-current=\"true\">Alle</a>" "Alle active without class filter"
+assert_contains "$MATHE" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/\" aria-current=\"true\">Alle <span class=\"profax-count\">" "Alle active without class filter"
 assert_not_contains "$(shop_nav "$MATHE_HTML")" 'profax-no-match' "no dimmed categories without class filter"
 assert_contains "$(shop_nav "$HOME_HTML")" '<span class="profax-filter-label">Produktkategorien:</span>' "category navigation labelled"
 assert_contains "$MATHE" '<span class="profax-filter-label">Klasse:</span>' "class row labelled"
@@ -165,9 +176,9 @@ if [ -n "$POS_NAV" ] && [ -n "$POS_KLASSEN" ] && [ -n "$POS_TITLE" ] && [ "$POS_
 assert_matches "$(tr -d '\n\t' < "$THEME_DIR/assets/css/profax-site.css")" '\.profax-pills a,\.profax-pills a:visited \{[^}]*color: #404040;' "class pills are gray, also when visited (style.css: BODY a:visited)"
 MATHE3_HTML="$(get '/produktkategorie/mathematik/?filter_klasse=3')"
 MATHE3="$(klassen_row "$MATHE3_HTML")"
-assert_contains "$MATHE3" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=3\" aria-current=\"true\">3. Klasse</a>" "active class pill"
-assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/\">Alle</a>" "Alle removes the class filter, keeps the category"
-assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=4\">4. Klasse</a>" "class pill keeps the category"
+assert_contains "$MATHE3" "<li class=\"is-active\"><a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=3\" aria-current=\"true\">3. Klasse <span class=\"profax-count\">" "active class pill"
+assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/\">Alle <span class=\"profax-count\">" "Alle removes the class filter, keeps the category"
+assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=4\">4. Klasse <span class=\"profax-count\">" "class pill keeps the category"
 assert_equals "$(grep -c 'class="product type-product' <<<"$MATHE3_HTML")" "5" "category and class filter combined"
 NAV9="$(shop_nav "$(get '/shop/?filter_klasse=9')")"
 assert_contains "$NAV9" "href=\"$SHOP/produktkategorie/geografie/?filter_klasse=9\"" "category link keeps the class filter"
@@ -175,7 +186,13 @@ assert_contains "$NAV9" "href=\"$SHOP/shop/?filter_klasse=9\"" "Alle category li
 RS9="$(grep -oE '<li [^>]*><a href="[^"]*/rechtschreibung/[^"]*"' <<<"$NAV9")"
 assert_contains "$RS9" 'profax-no-match' "category without products for the class is dimmed"
 assert_not_contains "$RS9" 'filter_klasse' "dimmed category links without class filter"
-assert_contains "$(klassen_row "$(get '/shop/?filter_klasse=vorschule')")" 'aria-current="true">Vorschule</a>' "class row on the shop page shows the active filter"
+# product counts in the pills
+check_counts "$KLASSEN" "front page class pill counts match the linked pages"
+check_counts "$MATHE3" "category class pill counts match the linked pages"
+check_counts "$(shop_nav "$MATHE_HTML")" "category pill counts match the linked pages"
+check_counts "$NAV9" "category pill counts with active class match the linked pages"
+assert_equals "$(grep -cE 'profax-no-match[^>]*><a [^>]*>[^<]*<span class="profax-count"' <<<"$NAV9")" "0" "dimmed categories show no count"
+assert_contains "$(klassen_row "$(get '/shop/?filter_klasse=vorschule')")" 'aria-current="true">Vorschule <span class="profax-count">' "class row on the shop page shows the active filter"
 assert_not_contains "$(get '/produktkategorie/mathematik/?filter_klasse=%22%3E%3Cb%3Exss')" '"><b>xss' "class filter value is escaped"
 SEARCH_HTML="$(get '/?s=mathe&post_type=product')"
 assert_contains "$SEARCH_HTML" 'class="product type-product' "product search returns products"

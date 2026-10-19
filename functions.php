@@ -521,7 +521,7 @@ function profax_front_klassen() {
 	$shop = get_permalink( wc_get_page_id( 'shop' ) );
 	echo '<section class="profax-front-klassen"><h2>' . esc_html__( 'Lernhefte nach Klasse', 'storefront-child-profax' ) . '</h2><ul class="profax-pills">';
 	foreach ( $terms as $term ) {
-		echo '<li><a href="' . esc_url( add_query_arg( 'filter_klasse', $term->slug, $shop ) ) . '">' . esc_html( profax_klasse_label( $term ) ) . '</a></li>';
+		echo '<li><a href="' . esc_url( add_query_arg( 'filter_klasse', $term->slug, $shop ) ) . '">' . esc_html( profax_klasse_label( $term ) ) . profax_count_html( profax_klasse_count( $term->slug, profax_catalog_index()['ids'] ) ) . '</a></li>';
 	}
 	echo '</ul></section>';
 }
@@ -599,20 +599,29 @@ function profax_active_klasse() {
 	return '' !== $slug && isset( profax_catalog_index()['klassen'][ $slug ] ) ? $slug : '';
 }
 
-// Pill row "Klasse: Alle, Vorschule, 1. Klasse …" linking to $base; '' with fewer than 2 classes
-function profax_klassen_filter_html( $base, $terms, $active ) {
+// Number of the given products that have the class $slug
+function profax_klasse_count( $slug, $ids ) {
+	$klassen = profax_catalog_index()['klassen'];
+	return isset( $klassen[ $slug ] ) ? count( array_intersect( $klassen[ $slug ], $ids ) ) : 0;
+}
+
+// Pill row "Klasse: Alle (n), Vorschule (n), 1. Klasse (n) …" for the products $ids, linking to $base;
+// '' with fewer than 2 classes
+function profax_klassen_filter_html( $base, $terms, $active, $ids = array() ) {
 	if ( count( $terms ) < 2 ) {
 		return '';
 	}
-	$pills = array( '' => __( 'Alle', 'storefront-child-profax' ) );
+	$pills  = array( '' => __( 'Alle', 'storefront-child-profax' ) );
+	$counts = array( '' => count( $ids ) );
 	foreach ( $terms as $term ) {
-		$pills[ $term->slug ] = profax_klasse_label( $term );
+		$pills[ $term->slug ]  = profax_klasse_label( $term );
+		$counts[ $term->slug ] = profax_klasse_count( $term->slug, $ids );
 	}
 	$html = '<nav class="profax-klassen-filter" aria-label="' . esc_attr__( 'Klasse', 'storefront-child-profax' ) . '"><span class="profax-filter-label">' . esc_html__( 'Klasse:', 'storefront-child-profax' ) . '</span><ul class="profax-pills">';
 	foreach ( $pills as $slug => $label ) {
 		$url       = '' === (string) $slug ? $base : add_query_arg( 'filter_klasse', $slug, $base );
 		$is_active = (string) $slug === $active;
-		$html     .= '<li' . ( $is_active ? ' class="is-active"' : '' ) . '><a href="' . esc_url( $url ) . '"' . ( $is_active ? ' aria-current="true"' : '' ) . '>' . esc_html( $label ) . '</a></li>';
+		$html     .= '<li' . ( $is_active ? ' class="is-active"' : '' ) . '><a href="' . esc_url( $url ) . '"' . ( $is_active ? ' aria-current="true"' : '' ) . '>' . esc_html( $label ) . profax_count_html( $counts[ $slug ] ) . '</a></li>';
 	}
 	return $html . '</ul></nav>';
 }
@@ -635,25 +644,54 @@ function profax_archive_klassen() {
 		return;
 	}
 	if ( ! is_wp_error( $base ) ) {
-		echo profax_klassen_filter_html( $base, profax_klasse_terms( $ids ), profax_active_klasse() );
+		echo profax_klassen_filter_html( $base, profax_klasse_terms( $ids ), profax_active_klasse(), $ids );
 	}
+}
+
+// Product count after a pill text: " (n)"
+function profax_count_html( $n ) {
+	return ' <span class="profax-count">(' . (int) $n . ')</span>';
+}
+
+function profax_is_shop_nav( $args ) {
+	return ! empty( $args->theme_location ) && 'primary' === $args->theme_location;
+}
+
+// Visible products a category navigation item stands for (category incl. subcategories, "Alle" = shop page);
+// null for other items
+function profax_shop_nav_item_ids( $item ) {
+	$index = profax_catalog_index();
+	if ( 'product_cat' === $item->object ) {
+		return isset( $index['cats'][ (int) $item->object_id ] ) ? $index['cats'][ (int) $item->object_id ] : array();
+	}
+	if ( 'page' === $item->object && function_exists( 'wc_get_page_id' ) && (int) $item->object_id === wc_get_page_id( 'shop' ) ) {
+		return $index['ids'];
+	}
+	return null;
 }
 
 // Category navigation item with an active class: true = has products of that class, false = none,
 // null = not affected (no active class, other menu, other item type)
 function profax_shop_nav_klasse_match( $item, $args ) {
-	if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location || ! ( $klasse = profax_active_klasse() ) ) {
+	if ( ! profax_is_shop_nav( $args ) || ! ( $klasse = profax_active_klasse() ) || null === ( $ids = profax_shop_nav_item_ids( $item ) ) ) {
 		return null;
 	}
-	$index = profax_catalog_index();
-	if ( 'product_cat' === $item->object ) {
-		$cat_ids = isset( $index['cats'][ (int) $item->object_id ] ) ? $index['cats'][ (int) $item->object_id ] : array();
-		return (bool) array_intersect( $cat_ids, $index['klassen'][ $klasse ] );
+	return (bool) array_intersect( $ids, profax_catalog_index()['klassen'][ $klasse ] );
+}
+
+// Count of the linked page; dimmed categories (no products of the active class) get none, their link drops the filter
+add_filter( 'nav_menu_item_title', 'profax_shop_nav_count', 10, 3 );
+function profax_shop_nav_count( $title, $item, $args ) {
+	if ( ! profax_is_shop_nav( $args ) || null === ( $ids = profax_shop_nav_item_ids( $item ) ) ) {
+		return $title;
 	}
-	if ( 'page' === $item->object && function_exists( 'wc_get_page_id' ) && (int) $item->object_id === wc_get_page_id( 'shop' ) ) {
-		return true;
+	if ( $klasse = profax_active_klasse() ) {
+		$ids = array_intersect( $ids, profax_catalog_index()['klassen'][ $klasse ] );
+		if ( ! $ids ) {
+			return $title;
+		}
 	}
-	return null;
+	return $title . profax_count_html( count( $ids ) );
 }
 
 add_filter( 'nav_menu_link_attributes', 'profax_shop_nav_klasse_link', 10, 3 );
