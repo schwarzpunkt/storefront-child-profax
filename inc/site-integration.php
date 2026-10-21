@@ -209,7 +209,7 @@ function profax_show_shop_nav() {
 	if ( is_front_page() ) {
 		return true;
 	}
-	return function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_account_page() ) && ! is_cart() && ! is_checkout();
+	return function_exists( 'is_woocommerce' ) && is_woocommerce() && ! is_cart() && ! is_checkout();
 }
 
 // Produktkategorien (primäres Storefront-Menü) als Shop-Navigation unter dem Suchfeld (Priorität 10)

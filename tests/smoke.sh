@@ -216,12 +216,12 @@ skip_targets_ok() {  # every skip link points to an element on the page
 		grep -qF "id=\"$target\"" <<<"$html" || return 1
 	done
 }
-for path in / /shop/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ /mein-konto/ '/?s=mathe&post_type=product'; do
+for path in / /shop/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ '/?s=mathe&post_type=product'; do
 	PAGE="$(get "$path")"
 	assert_contains "$PAGE" 'class="profax-shop-nav"' "category navigation on $path"
 	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"
 done
-for path in /warenkorb/ /blog/ /brueche-verstehen-mit-bruechen-rechnen/ /datenzugriffsanfrage/ '/?s=mathe'; do
+for path in /warenkorb/ /mein-konto/ /blog/ /brueche-verstehen-mit-bruechen-rechnen/ /datenzugriffsanfrage/ '/?s=mathe'; do
 	PAGE="$(get "$path")"
 	assert_not_contains "$PAGE" 'class="profax-shop-nav"' "no category navigation on $path"
 	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"
