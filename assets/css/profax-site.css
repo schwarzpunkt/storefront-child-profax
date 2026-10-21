@@ -638,6 +638,53 @@ body a.added_to_cart:visited {
 	}
 }
 
+/* Cookie-Hinweis unter dem Header (template.css/zeitgeist.css der Hauptseite) */
+.profax-cookie-banner {
+	width: 100%;
+	background: #3B6BA9;
+	color: #FFF;
+	font-size: 14px;
+}
+.profax-cookie-banner .cookiecCnt {
+	max-width: 93%;
+	margin: 0 auto;
+	padding: 0.75em 1em 1em 1em;
+}
+.profax-cookie-banner a,
+.profax-cookie-banner a:visited {
+	color: #70C8FF;
+	font-weight: bold;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.profax-cookie-banner a:hover {
+	color: #40D0FF;
+}
+/* Storefront gestaltet button: Hintergrund, Padding und Schatten zurücksetzen (body für die Spezifität) */
+body .profax-cookie-banner .cookiecClose {
+	float: right;
+	width: 4em;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	box-shadow: none;
+	color: #FFF;
+	font-family: zimiicons, sans-serif;
+	font-size: 20px;
+	line-height: 20px;
+	text-align: right;
+	cursor: pointer;
+}
+body .profax-cookie-banner .cookiecClose:hover {
+	color: #000;
+}
+@media (min-width: 49rem) {
+	.profax-cookie-banner .cookiecCnt {
+		max-width: 60rem;
+	}
+}
+
 /* Filterzeilen unter dem Suchfeld: Produktkategorien (Startseite und WooCommerce-Seiten) und
    auf Shop- und Kategorieseiten Klassen. Gleiche Box wie der Inhalt, Titel über den Pills. */
 .profax-shop-nav,
@@ -1216,8 +1263,8 @@ body.single-product div.product form.cart .quantity {
 }
 
 /* Schaltflächen überall: Pill wie Kategorien und Suchfeld, 40px hoch.
-   body hebt die Spezifität über Storefront; Lightbox (PhotoSwipe) und Passwort-Auge bleiben unberührt. */
-body button:not(.pswp__button):not(.show-password-input),
+   body hebt die Spezifität über Storefront; Lightbox (PhotoSwipe), Passwort-Auge und Cookie-Hinweis bleiben unberührt. */
+body button:not(.pswp__button):not(.show-password-input):not(.cookiecClose),
 body input[type="button"],
 body input[type="reset"],
 body input[type="submit"],
@@ -1243,8 +1290,8 @@ body .added_to_cart {
 	transform: none;
 	transition: background-color 0.125s;
 }
-body button:not(.pswp__button):not(.show-password-input):hover,
-body button:not(.pswp__button):not(.show-password-input):focus,
+body button:not(.pswp__button):not(.show-password-input):not(.cookiecClose):hover,
+body button:not(.pswp__button):not(.show-password-input):not(.cookiecClose):focus,
 body input[type="button"]:hover,
 body input[type="submit"]:hover,
 body .button:hover,

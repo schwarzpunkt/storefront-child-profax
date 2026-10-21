@@ -163,6 +163,27 @@ function profax_site_header() {
 		</nav>
 	</header>
 	<?php
+	profax_cookie_banner();
+}
+
+// Cookie-Hinweis unter dem Header wie auf www.profaxonline.com (nur Information, keine Auswahl).
+// Schliessen setzt das Cookie cookieconsent=1 (profax-nav.js); solange es fehlt, erscheint der Hinweis.
+// Das Inline-Script entfernt ihn auch aus Seiten, die ein Cache ohne Rücksicht auf das Cookie ausliefert.
+function profax_cookie_banner() {
+	if ( isset( $_COOKIE['cookieconsent'] ) ) {
+		return;
+	}
+	?>
+	<div id="cookieconsent" class="profax-cookie-banner" role="region" aria-label="<?php esc_attr_e( 'Cookie-Hinweis', 'storefront-child-profax' ); ?>">
+		<div class="cookiecCnt">
+			<button type="button" class="cookiecClose" aria-label="<?php esc_attr_e( 'Hinweis schliessen', 'storefront-child-profax' ); ?>">&#xf057;</button>
+			Wir setzen Cookies ein, um Einstellungen zur laufenden Sitzung zu speichern.<br>
+			Wenn Sie die Website weiter nutzen, gehen wir von Ihrem Einverständnis aus.<br>
+			Weitere Informationen finden Sie unter <a href="<?php echo esc_url( PROFAX_MAIN_URL . 'privacypolicy/' ); ?>">Datenschutz</a>.
+		</div>
+	</div>
+	<script>if ( /(^|;\s*)cookieconsent=/.test( document.cookie ) ) { document.getElementById( 'cookieconsent' ).remove(); }</script>
+	<?php
 }
 
 // Name des Menüs an $location, dient als Spaltenüberschrift im Footer
