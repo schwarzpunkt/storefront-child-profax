@@ -922,9 +922,15 @@ body a.added_to_cart:visited {
 #page div.asl_w .probox .prosettings {
 	display: none !important;
 }
+/* Lupe: runder 32px-Knopf, mittig im 40px-Feld. min-height/padding heben die
+   seitenweite Pill-Regel für Schaltflächen auf (sonst 40px hoch und über dem Rahmen). */
 #page div.asl_w .probox .promagnifier {
+	flex: 0 0 32px;
+	align-self: center;
 	width: 32px !important;
 	height: 32px !important;
+	min-height: 0;
+	padding: 0;
 	border-radius: 50% !important;
 	background: rgba(80, 168, 255, 0.25) !important;
 	box-shadow: none !important;
@@ -937,9 +943,16 @@ body a.added_to_cart:visited {
 #page div.asl_w .probox .promagnifier:focus .innericon svg {
 	fill: #FFF !important;
 }
+#page div.asl_w .probox .promagnifier .innericon {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+}
 #page div.asl_w .probox .promagnifier .innericon svg {
 	width: 18px !important;
-	height: 32px !important;
+	height: 18px !important;
 	fill: #3088E0 !important;
 }
 #page div.asl_w .probox .proloading,
