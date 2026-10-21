@@ -19,8 +19,9 @@ add_action( 'woocommerce_product_query', function( $q ) {
 	$q->set( 'post_status', 'publish' );
 } );
 
-add_action( 'init', 'storefront_custom_logo' );
-function storefront_custom_logo() {
+// Standard-Hooks von Storefront und WooCommerce entfernen, umstellen und durch eigene ersetzen
+add_action( 'init', 'profax_setup_hooks' );
+function profax_setup_hooks() {
 	remove_action('storefront_before_content', 'woocommerce_breadcrumb', 10);
 
 	// Vorschaubilder umschliessen, damit sie zentriert werden können
@@ -36,8 +37,6 @@ function storefront_custom_logo() {
 		return 'shop_catalog';
 	} );
 
-
-
 	// Metadaten ans Ende des Beitrags verschieben
 	remove_action('storefront_post_header_before', 'storefront_post_meta', 10);
 	add_action('storefront_single_post', 'storefront_post_meta', 31);
@@ -45,7 +44,7 @@ function storefront_custom_logo() {
 
 	// Eigene Metadaten für Produkte
 	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
-	add_action( 'woocommerce_single_product_summary', 'custom_woocommerce_template_single_meta', 40 );
+	add_action( 'woocommerce_single_product_summary', 'profax_product_meta', 40 );
 
 	// „Ähnliche Produkte“ entfernen
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
@@ -54,19 +53,20 @@ function storefront_custom_logo() {
 	remove_action( 'woocommerce_after_single_product_summary', 'storefront_single_product_pagination', 30 );
 
 	// Eigener Hinweis auf das profax Lerngerät
-	add_action( 'woocommerce_after_single_product_summary', 'custom_woocommerce_after_single_product_summary_pfg', 12 );
+	add_action( 'woocommerce_after_single_product_summary', 'profax_lerngeraet_promo', 12 );
 	add_filter( 'woocommerce_product_tabs', 'profax_remove_product_tabs', 98 );
-	function profax_remove_product_tabs( $tabs ) {
-		//unset( $tabs['description'] );      	// Tab „Beschreibung“ entfernen
-		//unset( $tabs['reviews'] ); 			// Tab „Bewertungen“ entfernen
-		unset( $tabs['additional_information'] );  	// Tab „Zusätzliche Informationen“ entfernen
-
-		return $tabs;
-
-	}
 }
 
-function custom_woocommerce_template_single_meta() {
+function profax_remove_product_tabs( $tabs ) {
+	//unset( $tabs['description'] );      	// Tab „Beschreibung“ entfernen
+	//unset( $tabs['reviews'] ); 			// Tab „Bewertungen“ entfernen
+	unset( $tabs['additional_information'] );  	// Tab „Zusätzliche Informationen“ entfernen
+
+	return $tabs;
+}
+
+// Produkt-Metadaten: Artikelnummer bzw. ISBN, Attribute in fester Reihenfolge ($p_sort), Kategorien, Schlagwörter
+function profax_product_meta() {
 	global $post, $product;
 
 	$cats = get_the_terms( $post->ID, 'product_cat' );
@@ -201,7 +201,8 @@ function profax_structured_data_book_type( $context, $data, $type, $value ) {
 	return $context;
 }
 
-function custom_woocommerce_after_single_product_summary_pfg() {
+// Hinweis auf das passende Lerngerät bei Lernheften der beiden Lerngerät-Kategorien
+function profax_lerngeraet_promo() {
 	global $post, $product;
 
 	if (has_term('lernhefte-fuer-profaxli-lerngeraet', 'product_cat', $product->get_id())) {
