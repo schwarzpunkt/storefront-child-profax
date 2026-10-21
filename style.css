@@ -148,6 +148,21 @@ border-radius: 0;
     padding-bottom: 0.1em;
 }
 
+/* Storefront (woocommerce.css) zentriert auf Warenkorb, Kasse und Konto ab 768px den Titel und gibt ihm
+   fast 6em Abstand nach unten */
+body.storefront-full-width-content.woocommerce-cart .entry-header,
+body.storefront-full-width-content.woocommerce-checkout .entry-header,
+body.storefront-full-width-content.woocommerce-account .entry-header {
+    text-align: left;
+    padding-bottom: 1em;
+}
+
+/* Kasse: erste Überschriften der beiden Spalten folgen direkt auf den Seitentitel */
+.woocommerce-checkout .woocommerce-billing-fields > h3,
+.woocommerce-checkout #order_review_heading {
+    margin-top: 0 ! important;
+}
+
 .entry-content > *:first-child {
     margin-top: 0 ! important;
 }
@@ -339,8 +354,8 @@ img.attachment-shop_thumbnail {
     border-radius: 0;
 }
 
-/* Schaltflächen */
-button,
+/* Schaltflächen: Farbe; Form und Grösse in assets/css/profax-site.css */
+button:not(.pswp__button):not(.show-password-input),
 button.alt,
 input[type="button"],
 input[type="reset"],
@@ -353,28 +368,10 @@ input[type="submit"],
 a.button {
     background: #1088FF ! important;
 	color: #FFF;
-	padding: 0.25em 1.0em;
-	border: none;
-	border-radius: 4px;
-	box-shadow: rgba(0, 0, 0, 0.75) 0 4px 4px -4px;
 }
 
 
 @media (min-width: 768px) {
-button:hover,
-button.alt:hover,
-input[type="button"]:hover,
-input[type="reset"]:hover,
-input[type="submit"]:hover,
-.button:hover,
-.added_to_cart:hover,
-.widget a.button:hover,
-.Xsite-header-cart:hover
-.Xwidget_shopping_cart:hover,
-a.button:hover {
-	transform: scale(1.05);
-}
-
 /* Eingabefelder */
 .input-text, input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], textarea {
 	padding: 0.25em 0.5em;

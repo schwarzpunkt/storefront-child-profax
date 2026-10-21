@@ -207,19 +207,19 @@ if [ "$HAS_WP" = 1 ]; then
 	assert_not_contains "$ONE" 'PHPWARN' "no PHP warning for single class row"
 fi
 
-# --- Category navigation only on the front page and WooCommerce pages; search everywhere ---
+# --- Category navigation only on the front page and WooCommerce pages outside the order process; search everywhere ---
 skip_targets_ok() {  # every skip link points to an element on the page
 	local html="$1" target
 	for target in $(grep -oE 'class="skip-link[^"]*" href="#[^"]+"' <<<"$html" | grep -oE '#[^"]+' | tr -d '#'); do
 		grep -qF "id=\"$target\"" <<<"$html" || return 1
 	done
 }
-for path in / /shop/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ /warenkorb/ /mein-konto/ '/?s=mathe&post_type=product'; do
+for path in / /shop/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ /mein-konto/ '/?s=mathe&post_type=product'; do
 	PAGE="$(get "$path")"
 	assert_contains "$PAGE" 'class="profax-shop-nav"' "category navigation on $path"
 	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"
 done
-for path in /blog/ /brueche-verstehen-mit-bruechen-rechnen/ /datenzugriffsanfrage/ '/?s=mathe'; do
+for path in /warenkorb/ /blog/ /brueche-verstehen-mit-bruechen-rechnen/ /datenzugriffsanfrage/ '/?s=mathe'; do
 	PAGE="$(get "$path")"
 	assert_not_contains "$PAGE" 'class="profax-shop-nav"' "no category navigation on $path"
 	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"

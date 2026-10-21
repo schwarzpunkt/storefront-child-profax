@@ -323,17 +323,24 @@ function profax_cart_link() {
 		return '';
 	}
 	$count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
-	$html  = '<a class="profax-cart" href="' . esc_url( wc_get_cart_url() ) . '" aria-label="' . esc_attr__( 'Warenkorb', 'storefront-child-profax' ) . '">' . profax_cart_icon();
+	$html  = '<a class="profax-cart" href="' . esc_url( wc_get_cart_url() ) . '">' . profax_cart_icon();
 	if ( $count > 0 ) {
 		$html .= '<span class="profax-cart__count">' . (int) $count . '</span>';
 	}
-	return $html . '</a>';
+	return $html . '<span class="profax-cart__label">' . esc_html__( 'Warenkorb', 'storefront-child-profax' ) . '</span></a>';
 }
 
 add_filter( 'woocommerce_add_to_cart_fragments', 'profax_cart_link_fragment' );
 function profax_cart_link_fragment( $fragments ) {
 	$fragments['a.profax-cart'] = profax_cart_link();
 	return $fragments;
+}
+
+// WooCommerce cacht die Fragmente im sessionStorage, bis sich der Warenkorb-Hash ändert.
+// Bei Änderungen am Markup von profax_cart_link() die Version erhöhen, damit alte Fragmente verworfen werden.
+add_filter( 'woocommerce_cart_hash', 'profax_cart_hash_version' );
+function profax_cart_hash_version( $hash ) {
+	return '' === $hash ? $hash : md5( $hash . 'profax-cart-3' );
 }
 
 // Skip-Links von Storefront, „Zur Navigation springen“ aber nur, wo die Kategorie-Navigation erscheint
@@ -406,8 +413,8 @@ function profax_site_footer() {
 }
 
 // Kategorie-Navigation nur auf der Startseite und auf WooCommerce-Seiten (Shop, Kategorien, Schlagwörter,
-// Produkte, Produktsuche, Warenkorb, Kasse, Konto); nicht auf Inhaltsseiten, im Blog und in der allgemeinen
-// Suche. Das Suchfeld (Header-Widget-Bereich) bleibt auf jeder Seite.
+// Produkte, Produktsuche, Konto); nicht im Bestellprozess (Warenkorb, Kasse), auf Inhaltsseiten, im Blog und
+// in der allgemeinen Suche. Das Suchfeld (Header-Widget-Bereich) bleibt auf jeder Seite.
 function profax_show_shop_nav() {
 	if ( ! has_nav_menu( 'primary' ) ) {
 		return false;
@@ -415,7 +422,7 @@ function profax_show_shop_nav() {
 	if ( is_front_page() ) {
 		return true;
 	}
-	return function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() );
+	return function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_account_page() ) && ! is_cart() && ! is_checkout();
 }
 
 // Produktkategorien (primäres Storefront-Menü) als Shop-Navigation unter dem Suchfeld (Priorität 10)
