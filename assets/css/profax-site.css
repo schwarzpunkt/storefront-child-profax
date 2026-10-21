@@ -187,9 +187,73 @@ body.storefront-full-width-content.woocommerce-account .entry-header {
 ::placeholder {
 	font-family: zimi, zimiicons, sans-serif !important;
 }
+/* zimi sitzt hoch: Text in einzeiligen Feldern 0.17em tiefer, Feldhöhe bleibt gleich
+   (Storefront-Padding 0.618em, ab 768px 0.25em) */
+.input-text, input[type=text], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=search] {
+	padding-top: 0.788em;
+	padding-bottom: 0.448em;
+}
+textarea.input-text {
+	padding-top: 0.618em;
+	padding-bottom: 0.618em;
+}
 @media (min-width: 768px) {
-	.input-text, input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], textarea {
+	.input-text, input[type=text], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=search] {
+		padding: 0.42em 0.5em 0.08em;
+	}
+	textarea,
+	textarea.input-text {
 		padding: 0.25em 0.5em;
+	}
+}
+
+/* Formularzeilen in WooCommerce (Kasse, Konto, Adressen): mehr Abstand zwischen den Feldern */
+body .woocommerce form .form-row {
+	margin-bottom: 1.25em;
+}
+body .woocommerce form .form-row > label {
+	margin-bottom: 0.25em;
+}
+/* Auswahllisten (z. B. Land) wie die Textfelder: grauer Grund, kein Rahmen, gleiche Höhe, eigener Pfeil */
+body .woocommerce form .form-row select {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	box-sizing: border-box;
+	/* Text 0.17em tiefer wie bei den Textfeldern */
+	padding: 0.788em 2em 0.448em 0.618em;
+	border: 0;
+	border-radius: 0;
+	background: #F2F2F2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2343454B' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 0.75em center / 0.75em auto;
+	font-size: inherit;
+	line-height: 1.618;
+	color: #43454B;
+}
+@media (min-width: 768px) {
+	body .woocommerce form .form-row select {
+		padding: 0.42em 2em 0.08em 0.5em;
+	}
+	/* Zwei Felder auf einer Zeile: 5 % Lücke (Storefront: 5.9 %, in der Kasse 11.1 %) */
+	body .woocommerce form .form-row-first {
+		width: 47.5%;
+		margin-right: 5%;
+	}
+	body .woocommerce form .form-row-last {
+		width: 47.5%;
+	}
+	/* PLZ und Ort auf einer Zeile wie Vorname und Nachname, PLZ 20 % breit */
+	body .woocommerce form #billing_postcode_field,
+	body .woocommerce form #shipping_postcode_field {
+		float: left;
+		clear: both;
+		width: 20%;
+		margin-right: 5%;
+	}
+	body .woocommerce form #billing_city_field,
+	body .woocommerce form #shipping_city_field {
+		float: right;
+		clear: none;
+		width: 75%;
 	}
 }
 
