@@ -38,6 +38,468 @@
 	font-display: block;
 }
 
+/* Ältere Inhalts-Styles (früher in style.css) */
+
+* {
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+	-webkit-font-smoothing: subpixel-antialiased ! important;
+}
+
+BODY a,
+BODY a:active,
+BODY a:visited {
+	color: #3088E0;
+	font-weight: normal ! important;
+	text-decoration: none ! important;
+}
+
+a:focus, .button:focus, .button.alt:focus, .button.added_to_cart:focus, .button.wc-forward:focus, button:focus, input[type="button"]:focus, input[type="reset"]:focus, input[type="submit"]:focus {
+	//outline-color: transparent;
+	outline: none;
+}
+
+H1, H2, H3, H4 {
+	font-weight: normal;
+	line-height: 1;
+	margin-top: 3em ! important;
+	margin-bottom: .5em ! important;
+	letter-spacing: -0.025em;
+	color: #444;
+}
+
+H1 a {
+	color: #444;
+}
+
+H1 {
+	font-size: 2.8em;
+	margin-top: 0 ! important;
+}
+
+H1.product_title {
+	text-align: left;
+}
+
+H2 {
+	font-size: 2.8em;
+}
+
+H2:first-child {
+	margin-top: 0em ! important;
+}
+
+H3 {
+	font-size: 1.9em;
+	color: #000;
+}
+
+H3 {
+	font-size: 1.45em;
+}
+
+DIV.entry-content H4 {
+	font-size: 1em;
+	font-weight: bold ! important;
+}
+
+LABEL {
+	font-weight: normal;
+}
+
+
+#tab-description H3 {
+	text-align: left ! important;
+	margin-top: 2em ! important;
+}
+
+ADDRESS, DD, HR, P {
+    margin: 0 0 0.5em 0;
+}
+
+.hfeed .page-header,
+.home .entry-header {
+	display: none;
+}
+
+BODY:not(.single-post) .hentry {
+	margin: 0 0 4em 0;
+}
+
+.type-post table {
+	width: auto;
+}
+
+.type-post table tbody td,
+.type-post table tbody tr:nth-child(2n) td {
+	background: none;
+	padding: 0 1em 0 0;
+}
+
+.site-main,
+.page-template-template-homepage .site-main {
+	padding-top: 3em;
+}
+
+
+.hentry IMG {
+border-radius: 0;
+}
+
+
+.hentry IMG[width="600"] {
+	width: 100%;
+}
+
+.wp-post-image + H3 {
+	margin-top: 0 ! important;
+}
+
+.cart-subtotal th {
+    width: 160px;
+}
+/*
+.woocommerce-breadcrumb {
+	background-color: transparent;
+}
+*/
+.col-full {
+	width: auto;
+	padding: 0;
+}
+
+.hentry .entry-header {
+    margin-bottom: 3em;
+    border: 0;
+    position: relative;
+    padding-bottom: 0.1em;
+}
+
+/* Storefront (woocommerce.css) zentriert auf Warenkorb, Kasse und Konto ab 768px den Titel und gibt ihm
+   fast 6em Abstand nach unten */
+body.storefront-full-width-content.woocommerce-cart .entry-header,
+body.storefront-full-width-content.woocommerce-checkout .entry-header,
+body.storefront-full-width-content.woocommerce-account .entry-header {
+    text-align: left;
+    padding-bottom: 1em;
+}
+
+/* Kasse: erste Überschriften der beiden Spalten folgen direkt auf den Seitentitel */
+.woocommerce-checkout .woocommerce-billing-fields > h3,
+.woocommerce-checkout #order_review_heading {
+    margin-top: 0 ! important;
+}
+
+.entry-content > *:first-child {
+    margin-top: 0 ! important;
+}
+
+.hentry .entry-header .posted-on {
+	display: block;
+    position: absolute;
+    bottom: 0.5em;
+    text-align: center;
+    width: 100%;
+}
+
+.hentry .wp-post-image {
+	display: none;
+}
+
+/* exp */
+
+table td, table th,
+table.cart td, table.cart th {
+    padding: 8px;
+    font-weight: normal;
+}
+
+.shop_table.cart th {
+	border-bottom: solid 1px #000;
+}
+table.cart td.product-remove {
+	padding: 0;
+}
+table.cart td.product-quantity .qty {
+	padding: 0;
+	margin: -2px 0 0 0;
+}
+
+.shop_table.woocommerce-checkout-review-order-table {
+	font-size: 15px;
+}
+
+.cart .price {
+	text-align: right;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-family: zimi, zimiicons, sans-serif ! important;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  font-family: zimi, zimiicons, sans-serif ! important;
+}
+:-moz-placeholder { /* Firefox 18- */
+  font-family: zimi, zimiicons, sans-serif ! important;
+}
+
+
+
+a.button.product_type_external {
+    width: 192px;
+    text-align: center;
+    float: none ! important;
+}
+
+.home .storefront-sorting,
+h1 + div.storefront-sorting,
+.wc-forward:after,
+.woocommerce-Button--next:after,
+.button.product_type_simple {
+	display: none;
+}
+
+#content ul.products li.product h3 {
+	margin-top: 1em ! important;
+	height: 1.1em !important;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul.products li.product {
+	margin-bottom: 1em;
+}
+
+img.attachment-shop_catalog.size-shop_catalog:hover {
+    transform: scale(1.05);
+}
+
+
+
+/* Autor und Metadaten */
+aside.entry-meta {
+	width: 100% ! important;
+    margin: 2em 0 0;
+    padding-top: 1em;
+    border-top: solid 1px #ccc;
+}
+
+aside.entry-meta .comments-link {
+	display: none;
+}
+
+aside.entry-meta .author img {
+	float: left;
+	margin: 0 1em 0 0;
+}
+
+aside.entry-meta > div {
+	margin: 0;
+}
+
+aside.entry-meta > div > div {
+	display: inline-block;
+	margin-right: 0.25em;
+}
+
+aside.entry-meta > div > div:after {
+	content: ':';
+}
+
+
+
+/* Inhalt */
+.hentry.type-post .entry-content {
+	width: auto;
+}
+
+.woocommerce-tabs {
+	padding-top: 0 ! important;
+	border-bottom: solid 1px #DDD;
+    margin-bottom: 64px;
+    padding-bottom: 0;
+}
+
+.woocommerce-tabs .wc-tabs {
+	display: none;
+}
+
+.woocommerce-Tabs-panel--description H2:first-child {
+	display: none;
+}
+
+.woocommerce-Tabs-panel--description H3:nth-child(2) {
+	margin-top: 0 ! important;
+	border-top: none;
+}
+
+.single-product div.product .product_meta {
+	border-top: none;
+}
+
+
+/* Quadratische Box für Katalogbilder (max. 300 px, Grösse shop_catalog), Bild darin zentriert */
+.thumbnail_wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+}
+
+.storefront-sorting + ul.products {
+    margin-top: 4em ! important;
+}
+
+ul.products li.type-product img {
+    width: auto;
+    height: auto;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 100%;
+}
+
+ul.products li.product h3 {
+    margin-top: 0.5em ! important;
+    height: 2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+ul.products li.product img,
+img.attachment-shop_single,
+img.attachment-shop_thumbnail {
+    box-shadow: 0 2px 1px -1px #000;
+    box-shadow: 0 1em 1em -1em rgba(0,0,0,0.75) , 0em 0em 3em 0em rgba(0,0,0,0.2);
+    box-shadow: 0 14px 14px -14px rgba(0,0,0,0.75) , 0em 0em 42px 0em rgba(0,0,0,0.2);
+    box-shadow: 0 7px 7px -7px rgba(0,0,0,0.75) , 0em 0em 21px 0em rgba(0,0,0,0.2);
+    border-radius: 0;
+}
+
+/* Schaltflächen: Farbe; Form und Grösse in assets/css/profax-site.css */
+button:not(.pswp__button):not(.show-password-input),
+button.alt,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+.button,
+.added_to_cart,
+.widget a.button,
+.Xsite-header-cart,
+.Xwidget_shopping_cart,
+a.button {
+    background: #1088FF ! important;
+	color: #FFF;
+}
+
+
+@media (min-width: 768px) {
+/* Eingabefelder */
+.input-text, input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], textarea {
+	padding: 0.25em 0.5em;
+}
+}
+
+H1, H2, H3, H4, H1 > a {
+	color: #000;
+}
+
+body, .secondary-navigation a, .onsale, .pagination .page-numbers li .page-numbers:not(.current), .woocommerce-pagination .page-numbers li .page-numbers:not(.current) {
+    color: #000;
+}
+
+
+/* WooCommerce-Meldungen */
+.woocommerce-message .button {
+	display: none;
+}
+.woocommerce-message {
+	position: absolute;
+    pointer-events: none;
+    animation: fadeout 3s;
+    -moz-animation: fadeout3s;
+    -webkit-animation: fadeout 3s;
+    -ms-animation: fadeout 3s;
+    animation-iteration-count: 1;
+    opacity: 0;
+    top: 70px;
+    max-width: 980px;
+    width: 100%;
+    z-index: 1000;
+}
+@keyframes fadeout {0% {opacity:1.0;} 66% {opacity:1.0;} 100% {opacity:0;}}
+@-ms-keyframes fadeout {0% {opacity:1.0;} 66% {opacity:1.0;} 100% {opacity:0;}}
+@-moz-keyframes fadeout {0% {opacity:1.0;} 66% {opacity:1.0;} 100% {opacity:0;}}
+@-webkit-keyframes fadeout {0% {opacity:1.0;} 66% {opacity:1.0;} 100% {opacity:0;}}
+
+
+@media (max-width: 768px) {
+table.cart td.product-remove a.remove {
+	display: inline;
+	margin: 13px 0 0 -10px;
+}
+div#ajaxsearchliteres2 {
+    top: 320px ! important;
+}
+}
+
+.product_tag-fs,
+.product_tag-fs img {
+	box-shadow: none ! important;
+}
+
+
+/* Stiftung */
+.parent-pageid-3832 .entry-content img {
+    float: right;
+    padding: 0 0 1em 1em;
+}
+
+
+/* Hinweis-Blöcke unter dem Produkt (Lerngerät) */
+.profax-promo {
+	margin: -32px 0 64px;
+	border-bottom: solid 1px #DDD;
+	padding: 0 0 32px;
+}
+
+.profax-promo--profaxli {
+	padding-bottom: 64px;
+}
+
+.profax-promo__image img {
+	float: left;
+	height: 150px;
+	margin: 0 40px 0 0;
+}
+
+.profax-promo--profaxli .profax-promo__image img {
+	width: 150px;
+}
+
+.profax-promo--profax .profax-promo__image img {
+	width: 300px;
+}
+
+.profax-promo h3 {
+	margin-top: 0 ! important;
+	text-align: left;
+	display: inline-block;
+}
+
+@media (max-width: 768px) {
+	.profax-promo__image img {
+		float: none;
+		margin: 0 0 1em;
+	}
+}
+
 /* Grundlagen */
 body,
 button,

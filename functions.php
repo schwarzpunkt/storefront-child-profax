@@ -232,8 +232,15 @@ add_action( 'wp_enqueue_scripts', 'profax_enqueue_assets', 20 );
 function profax_enqueue_assets() {
 	// zimi ersetzt die Google-Schrift von Storefront
 	wp_dequeue_style( 'storefront-fonts' );
-	wp_enqueue_style( 'profax-site', get_stylesheet_directory_uri() . '/assets/css/profax-site.css', array( 'storefront-child-style' ), PROFAX_THEME_VERSION );
+	wp_enqueue_style( 'profax-site', get_stylesheet_directory_uri() . '/assets/css/profax-site.css', array( 'storefront-style' ), PROFAX_THEME_VERSION );
 	wp_enqueue_script( 'profax-nav', get_stylesheet_directory_uri() . '/assets/js/profax-nav.js', array(), PROFAX_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+}
+
+// style.css enthält nur den Theme-Header, alle Styles stehen in profax-site.css.
+// Storefront lädt die style.css des Child-Themes mit Priorität 30.
+add_action( 'wp_enqueue_scripts', 'profax_dequeue_child_style', 40 );
+function profax_dequeue_child_style() {
+	wp_dequeue_style( 'storefront-child-style' );
 }
 
 // Farben aus dem Storefront-Customizer, fest im Code, damit sie zur Hauptseite passen.
