@@ -148,6 +148,16 @@ body.storefront-full-width-content.woocommerce-account .entry-header {
 	margin-top: 0 !important;
 }
 
+/* Bestellbestätigung (und Bestellansicht im Konto): die Titel stehen als erstes Kind in ihren
+   Sections und verlieren dort den oberen Abstand (h2:first-child), daher Abstand auf den Sections */
+.woocommerce-order-details,
+.woocommerce-customer-details {
+	margin-top: 4em;
+}
+.woocommerce-order > .woocommerce-order-details:first-child {
+	margin-top: 0;
+}
+
 .entry-content > *:first-child {
 	margin-top: 0 !important;
 }
