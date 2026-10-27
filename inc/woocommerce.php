@@ -201,25 +201,52 @@ function profax_structured_data_book_type( $context, $data, $type, $value ) {
 	return $context;
 }
 
+// Lerngerät-Produkt über den Slug suchen (die IDs unterscheiden sich lokal und live) und Link und Bild dazu liefern;
+// null, wenn das Produkt fehlt oder nicht veröffentlicht ist, dann entfällt der Hinweis
+function profax_lerngeraet_promo_data( $slug, $image_size ) {
+	if ( ! function_exists( 'wc_get_product' ) ) {
+		return null;
+	}
+	$post   = get_page_by_path( $slug, OBJECT, 'product' );
+	$device = $post && 'publish' === $post->post_status ? wc_get_product( $post ) : null;
+	if ( ! $device ) {
+		return null;
+	}
+	return array(
+		'link'  => esc_url( get_permalink( $device->get_id() ) ),
+		'image' => $device->get_image( $image_size, array( 'alt' => $device->get_name() ), false ),
+	);
+}
+
 // Hinweis auf das passende Lerngerät bei Lernheften der beiden Lerngerät-Kategorien
 function profax_lerngeraet_promo() {
-	global $post, $product;
+	global $product;
 
-	if (has_term('lernhefte-fuer-profaxli-lerngeraet', 'product_cat', $product->get_id())) {
-		$link = esc_url(get_permalink(33)); // Produkt "profaxli Lerngerät"
-		$img = wp_get_attachment_image(1320, 'thumbnail', false, array('alt' => 'profax Lerngerät'));
+	if ( ! $product instanceof WC_Product ) {
+		return;
+	}
+
+	if ( has_term( 'lernhefte-fuer-profaxli-lerngeraet', 'product_cat', $product->get_id() ) ) {
+		$device = profax_lerngeraet_promo_data( 'profaxli-lerngeraet', 'thumbnail' );
+		if ( ! $device ) {
+			return;
+		}
+		$link = $device['link'];
 		echo '<div class="profax-promo profax-promo--profaxli">
-<a class="profax-promo__image" href="'.$link.'">'.$img.'</a>
+<a class="profax-promo__image" href="'.$link.'">'.$device['image'].'</a>
 <h3>benötigt das <a href="'.$link.'">profaxli Lerngerät</a></h3><br />
 Das <a href="'.$link.'">profaxli Lerngerät</a> und die Logo-Hefte 1-8 bilden zusammen ein Lernsystem, das ideal auf die Schule vorbereitet. Spielerisch an den Voraussetzungen für Mathe und Lesen arbeiten, aber ohne Zahlen und Buchstaben.
-		</div>';
-	} else if (has_term('lernhefte-fuer-profax-lerngeraet', 'product_cat', $product->get_id())) {
-		$link = esc_url(get_permalink(89)); // Produkt "profax Lerngerät"
-		$img = wp_get_attachment_image(1988, 'medium', false, array('alt' => 'profax Lerngerät'));
+			</div>';
+	} else if ( has_term( 'lernhefte-fuer-profax-lerngeraet', 'product_cat', $product->get_id() ) ) {
+		$device = profax_lerngeraet_promo_data( 'profax-lerngeraet', 'medium' );
+		if ( ! $device ) {
+			return;
+		}
+		$link = $device['link'];
 		echo '<div class="profax-promo profax-promo--profax">
-<a class="profax-promo__image" href="'.$link.'">'.$img.'</a>
+<a class="profax-promo__image" href="'.$link.'">'.$device['image'].'</a>
 <h3>benötigt das <a href="'.$link.'">profax Lerngerät</a></h3><br />
 Das <a href="'.$link.'">profax Lerngerät</a> mit Sofortrückmeldung und Kontrollblatt ist zusammen mit den Lehrmitteln zur Rechtschreibung, zum Textverständnis, zur Mathe und zu andern Themen ein wirksames Lernsystem. Es eignet sich für alle Formen von selbstständigem Lernen: Werkstattunterricht, offener Unterricht, Förderunterricht, Nachhilfe, usw.
-		</div>';
+			</div>';
 	}
 }
