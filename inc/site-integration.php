@@ -61,6 +61,14 @@ function profax_register_menus() {
 	) );
 }
 
+// Storefronts sekundäres und Handheld-Menü hängen an storefront_header, der nicht mehr läuft;
+// Priorität 20, weil Storefront sie erst nach dem Child-Theme registriert
+add_action( 'after_setup_theme', 'profax_unregister_storefront_menus', 20 );
+function profax_unregister_storefront_menus() {
+	unregister_nav_menu( 'secondary' );
+	unregister_nav_menu( 'handheld' );
+}
+
 // Einträge der obersten Ebene des Menüs an $location, [] wenn keines zugewiesen ist
 function profax_menu_items( $location ) {
 	$locations = get_nav_menu_locations();
@@ -199,7 +207,7 @@ function profax_menu_title( $location ) {
 function profax_site_footer() {
 	?>
 	<footer class="profax-site-footer">
-		<h3><a class="home" href="<?php echo esc_url( PROFAX_MAIN_URL ); ?>">profaxonline</a></h3>
+		<h3><a class="home" href="<?php echo esc_url( PROFAX_MAIN_URL ); ?>">profax</a></h3>
 		<nav class="fboxS">
 			<?php foreach ( array( 'profax_footer_help', 'profax_footer_about' ) as $location ) : ?>
 				<div class="f2">
