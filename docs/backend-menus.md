@@ -90,7 +90,9 @@ Die Startseite kommt aus dem Theme-Template `front-page.php`. Oben steht weiterh
 | Geräte-Karten | Produkte „profax Lerngerät“ (`profax-lerngeraet`) und „profaxli Lerngerät“ (`profaxli-lerngeraet`): Beitragsbild = Kartenbild, **Kurzbeschreibung** = Kartentext. Link „Lernhefte ansehen“ führt auf die Kategorien `lernhefte-fuer-profax-lerngeraet` bzw. `lernhefte-fuer-profaxli-lerngeraet`. Die Slugs nicht ändern, sonst fällt die Karte bzw. der Link weg. |
 | Lernhefte nach Klasse | Produkt-Attribut **Klasse** (Produkte → Eigenschaften). Werte ohne Produkte werden ausgeblendet. |
 | Beliebte Lernhefte | Stern „Empfohlen“ in der Produktliste. Gezeigt werden zufällig 4 empfohlene Produkte aus den beiden Lernheft-Kategorien. Ohne empfohlene Hefte fällt der Abschnitt weg. |
-| Stellen-Hinweis „Der profax Verlag sucht dich!“ | Im Inhalt von Seite 90, als eigene Zeile mit Leerzeilen davor und danach: `<div class="profax-front-jobs"><a href="/der-profax-verlag-sucht-dich/"><strong>Der profax Verlag sucht dich!</strong> <span>Zur Stellenausschreibung →</span></a></div>`. Das Theme liefert das Aussehen der Box (hellblau, ganze Box ist der Link). Ist die Stelle besetzt, den Block löschen. |
+| Stellen-Hinweis „Der profax Verlag sucht dich!“ | Im Inhalt von Seite 90, als eigene Zeile mit Leerzeilen davor und danach: `<div class="profax-front-jobs"><a href="https://www.profax.com/shop/der-profax-verlag-sucht-dich/"><strong>Der profax Verlag sucht dich!</strong> <span>Zur Stellenausschreibung →</span></a></div>`. Das Theme liefert das Aussehen der Box (hellblau, ganze Box ist der Link). Ist die Stelle besetzt, den Block löschen. |
+
+**Links im Inhalt immer mit voller Adresse** (`https://www.profax.com/shop/…`) oder über „Link einfügen“ im Editor setzen, nie mit `/` am Anfang: Der Shop liegt unter www.profax.com/shop, ein Link wie `/produkt/…` führt deshalb auf die Hauptseite statt in den Shop.
 | Aktuelles | Die 3 neusten Beiträge; der Auszug stammt aus dem Feld „Textauszug“ oder, wenn leer, aus dem Beitragstext (max. 20 Wörter). |
 
 ## 8. Umzug der Hauptseite von profaxonline.com nach profax.com

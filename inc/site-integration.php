@@ -84,10 +84,16 @@ function profax_menu_items( $location ) {
 	} ) );
 }
 
-// Links auf diesen Shop werden auf jeder Shop-Seite als aktiv markiert
+// Links auf diesen Shop werden auf jeder Shop-Seite als aktiv markiert. Host und Pfad zählen,
+// weil der Shop unter www.profax.com/shop denselben Host hat wie die Hauptseite.
 function profax_is_shop_link( $url ) {
 	$host = wp_parse_url( $url, PHP_URL_HOST );
-	return $host && $host === wp_parse_url( home_url(), PHP_URL_HOST );
+	if ( ! $host || $host !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
+		return false;
+	}
+	$path = trailingslashit( (string) wp_parse_url( $url, PHP_URL_PATH ) );
+	$home = trailingslashit( (string) wp_parse_url( home_url(), PHP_URL_PATH ) );
+	return 0 === strpos( $path, $home );
 }
 
 function profax_menu_link( $item ) {

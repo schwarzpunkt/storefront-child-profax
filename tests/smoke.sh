@@ -135,8 +135,8 @@ done
 KLASSEN="$(front_section profax-front-klassen)"
 assert_contains "$KLASSEN" '<h2>Lernhefte nach Klasse</h2>' "class row title"
 assert_equals "$(pill_labels "$KLASSEN")" "Vorschule|1. Klasse|2. Klasse|3. Klasse|4. Klasse|5. Klasse|6. Klasse|7. Klasse|8. Klasse|9. Klasse|IF" "class pills order and labels (empty values hidden)"
-assert_contains "$KLASSEN" "href=\"$SHOP/shop/?filter_klasse=vorschule\"" "class pill links to filtered shop"
-assert_equals "$(curl -s "$SHOP/shop/?filter_klasse=if" | grep -c 'class="product type-product')" "12" "IF filter returns products"
+assert_contains "$KLASSEN" "href=\"$SHOP/produkte/?filter_klasse=vorschule\"" "class pill links to filtered shop"
+assert_equals "$(curl -s "$SHOP/produkte/?filter_klasse=if" | grep -c 'class="product type-product')" "12" "IF filter returns products"
 FEATURED="$(front_section profax-front-featured)"
 assert_contains "$FEATURED" '<h2>Beliebte Lernhefte</h2>' "featured section title"
 assert_equals "$(grep -o '<li class="product type-product' <<<"$FEATURED" | wc -l | tr -d ' ')" "4" "four featured products"
@@ -186,9 +186,9 @@ assert_contains "$MATHE3" "<li class=\"is-active\"><a href=\"$SHOP/produktkatego
 assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/\">Alle <span class=\"profax-count\">" "Alle removes the class filter, keeps the category"
 assert_contains "$MATHE3" "<a href=\"$SHOP/produktkategorie/mathematik/?filter_klasse=4\">4. Klasse <span class=\"profax-count\">" "class pill keeps the category"
 assert_equals "$(grep -c 'class="product type-product' <<<"$MATHE3_HTML")" "5" "category and class filter combined"
-NAV9="$(shop_nav "$(get '/shop/?filter_klasse=9')")"
+NAV9="$(shop_nav "$(get '/produkte/?filter_klasse=9')")"
 assert_contains "$NAV9" "href=\"$SHOP/produktkategorie/geografie/?filter_klasse=9\"" "category link keeps the class filter"
-assert_contains "$NAV9" "href=\"$SHOP/shop/?filter_klasse=9\"" "Alle category link keeps the class filter"
+assert_contains "$NAV9" "href=\"$SHOP/produkte/?filter_klasse=9\"" "Alle category link keeps the class filter"
 RS9="$(grep -oE '<li [^>]*><a href="[^"]*/rechtschreibung/[^"]*"' <<<"$NAV9")"
 assert_contains "$RS9" 'profax-no-match' "category without products for the class is dimmed"
 assert_not_contains "$RS9" 'filter_klasse' "dimmed category links without class filter"
@@ -198,13 +198,13 @@ check_counts "$MATHE3" "category class pill counts match the linked pages"
 check_counts "$(shop_nav "$MATHE_HTML")" "category pill counts match the linked pages"
 check_counts "$NAV9" "category pill counts with active class match the linked pages"
 assert_equals "$(grep -cE 'profax-no-match[^>]*><a [^>]*>[^<]*<span class="profax-count"' <<<"$NAV9")" "0" "dimmed categories show no count"
-assert_contains "$(klassen_row "$(get '/shop/?filter_klasse=vorschule')")" 'aria-current="true">Vorschule <span class="profax-count">' "class row on the shop page shows the active filter"
+assert_contains "$(klassen_row "$(get '/produkte/?filter_klasse=vorschule')")" 'aria-current="true">Vorschule <span class="profax-count">' "class row on the shop page shows the active filter"
 assert_not_contains "$(get '/produktkategorie/mathematik/?filter_klasse=%22%3E%3Cb%3Exss')" '"><b>xss' "class filter value is escaped"
 SEARCH_HTML="$(get '/?s=mathe&post_type=product')"
 assert_contains "$SEARCH_HTML" 'class="product type-product' "product search returns products"
 assert_not_contains "$SEARCH_HTML" 'profax-klassen-filter' "no class row on search results (links would drop the search)"
 if [ "$HAS_WP" = 1 ]; then
-	ONE="$(wp_eval 'echo profax_klassen_filter_html( home_url( "/shop/" ), array( get_term_by( "slug", "3", "pa_klasse" ) ), "" ); echo "END";')"
+	ONE="$(wp_eval 'echo profax_klassen_filter_html( home_url( "/produkte/" ), array( get_term_by( "slug", "3", "pa_klasse" ) ), "" ); echo "END";')"
 	assert_not_contains "$ONE" 'profax-klassen-filter' "single class -> no class row"
 	assert_not_contains "$ONE" 'PHPWARN' "no PHP warning for single class row"
 fi
@@ -216,7 +216,7 @@ skip_targets_ok() {  # every skip link points to an element on the page
 		grep -qF "id=\"$target\"" <<<"$html" || return 1
 	done
 }
-for path in / /shop/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ '/?s=mathe&post_type=product'; do
+for path in / /produkte/ /produktkategorie/mathematik/ /produkt/ersatzschieber-profax/ '/?s=mathe&post_type=product'; do
 	PAGE="$(get "$path")"
 	assert_contains "$PAGE" 'class="profax-shop-nav"' "category navigation on $path"
 	assert_contains "$PAGE" 'class="header-widget-region"' "search on $path"
@@ -231,7 +231,7 @@ done
 # --- Private products stay out of the listings, also for logged-in admins ---
 if [ "$HAS_WP" = 1 ]; then
 	ADMIN_COOKIE="$(wp_eval '$u = get_users( array( "role" => "administrator", "number" => 1 ) ); echo "COOKIE:" . LOGGED_IN_COOKIE . "=" . rawurlencode( wp_generate_auth_cookie( $u[0]->ID, time() + 600, "logged_in" ) ) . "\n";' | grep -o 'COOKIE:.*' | cut -d: -f2-)"
-	for path in /shop/ /produktkategorie/mathematik/ '/produktkategorie/rechtschreibung/?filter_klasse=3' '/?s=logo&post_type=product'; do
+	for path in /produkte/ /produktkategorie/mathematik/ '/produktkategorie/rechtschreibung/?filter_klasse=3' '/?s=logo&post_type=product'; do
 		AS_ADMIN="$(curl -s -b "$ADMIN_COOKIE" "$SHOP$path")"
 		assert_matches "$AS_ADMIN" '<body class="[^"]*logged-in' "logged in as admin on $path"
 		assert_not_contains "$(grep -o '<li class="product type-product[^"]*' <<<"$AS_ADMIN")" 'status-private' "no private products for admins on $path"
@@ -241,7 +241,7 @@ fi
 
 # --- Backend changes: menus and front page content (see docs/backend-menus.md) ---
 if [ "${MENUS:-0}" = "1" ]; then
-	for path in / /shop/ /produkt/ersatzschieber-profax/ /warenkorb/ /mein-konto/ /blog/; do  # /kasse/ redirects to the cart while it is empty
+	for path in / /produkte/ /produkt/ersatzschieber-profax/ /warenkorb/ /mein-konto/ /blog/; do  # /kasse/ redirects to the cart while it is empty
 		HEADER="$(get "$path" | sed -n '/<header id="header"/,/<\/header>/p')"
 		CURRENT="$(grep -oE '<a href="[^"]*" class="[^"]*profax-current[^"]*"' <<<"$HEADER")"
 		assert_equals "$(grep -c . <<<"$CURRENT")" "1" "one active header link on $path"
