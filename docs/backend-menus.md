@@ -10,11 +10,11 @@ Links auf die Hauptseite legen Sie als **Individuelle Links** an. Für Shop-Seit
 
 | Titel | Typ | URL / Seite | CSS-Klasse |
 |---|---|---|---|
-| Produkte | Individueller Link | `https://www.profaxonline.com/dech/programs/` | |
-| Preise | Individueller Link | `https://www.profaxonline.com/dech/prices/` | |
-| Hilfe | Individueller Link | `https://www.profaxonline.com/dech/documentation/` | |
+| Produkte | Individueller Link | `https://www.profax.com/programs/` | |
+| Preise | Individueller Link | `https://www.profax.com/prices/` | |
+| Hilfe | Individueller Link | `https://www.profax.com/documentation/` | |
 | Shop | Individueller Link | Shop-Startseite (lokal `http://shop.profax.local/`, Produktion `https://shop.profax.com/`) | |
-| Registrieren | Individueller Link | `https://www.profaxonline.com/dech/registration/` | `hlRed` |
+| Registrieren | Individueller Link | `https://www.profax.com/registration/` | `hlRed` |
 
 Position: **Header: Hauptnavigation**
 
@@ -24,7 +24,7 @@ Position: **Header: Hauptnavigation**
 
 | Titel | Typ | URL |
 |---|---|---|
-| Login | Individueller Link | `https://www.profaxonline.com/dech/` |
+| Login | Individueller Link | `https://www.profax.com/` |
 
 Position: **Header: Login**
 
@@ -36,10 +36,10 @@ Der Menü-Name erscheint als Spaltenüberschrift im Footer.
 
 | Titel | Typ | URL |
 |---|---|---|
-| Videoanleitungen | Individueller Link | `https://www.profaxonline.com/dech/howto/` |
-| Handbücher / Zusatzmaterial | Individueller Link | `https://www.profaxonline.com/dech/documentation/` |
-| Häufig gestellte Fragen | Individueller Link | `https://www.profaxonline.com/dech/faq/` |
-| Seminare | Individueller Link | `https://www.profaxonline.com/dech/workshops/seminar/` |
+| Videoanleitungen | Individueller Link | `https://www.profax.com/howto/` |
+| Handbücher / Zusatzmaterial | Individueller Link | `https://www.profax.com/documentation/` |
+| Häufig gestellte Fragen | Individueller Link | `https://www.profax.com/faq/` |
+| Seminare | Individueller Link | `https://www.profax.com/workshops/seminar/` |
 
 Position: **Footer: Hilfe**
 
@@ -49,10 +49,10 @@ Den Menü-Namen von `info` auf **Über profax** ändern (er erscheint als Spalte
 
 | Titel | Typ | URL / Seite | Aktion |
 |---|---|---|---|
-| Kontakt und Impressum | Individueller Link | `https://www.profaxonline.com/dech/contact/` | neu (ersetzt „Impressum und Kontakt“) |
+| Kontakt und Impressum | Individueller Link | `https://www.profax.com/contact/` | neu (ersetzt „Impressum und Kontakt“) |
 | Aktuelles | Seite | Blog | neu |
-| Allgemeine Geschäftsbedingungen | Individueller Link | `https://www.profaxonline.com/dech/termsofservice/` | bestehenden Eintrag umbenennen, URL anpassen |
-| Datenschutz | Individueller Link | `https://www.profaxonline.com/dech/privacypolicy/` | bestehenden Eintrag umbenennen, URL anpassen |
+| Allgemeine Geschäftsbedingungen | Individueller Link | `https://www.profax.com/termsofservice/` | bestehenden Eintrag umbenennen, URL anpassen |
+| Datenschutz | Individueller Link | `https://www.profax.com/privacypolicy/` | bestehenden Eintrag umbenennen, URL anpassen |
 | Verkauf und Lieferung | Seite | Verkauf und Lieferung | bleibt |
 | Datenzugriffsanfrage | Seite | Datenzugriffsanfrage | bleibt |
 | Shop | Individueller Link | Shop-Startseite | neu |
@@ -69,7 +69,7 @@ Den ersten Eintrag **„p“** (Link auf die Startseite, Überbleibsel des alten
 
 ## 6. Nicht mehr benötigt
 
-- Die Position **Handheld-Menü** wird nicht mehr ausgegeben. Die Zuweisung kann bleiben oder entfernt werden.
+- Die Positionen **Sekundäres Menü** und **Handheld-Menü** gibt es nicht mehr. Menüs, die dort zugewiesen waren, bleiben erhalten, erscheinen aber nirgends.
 - Die Footer-Widgets unter **Design → Widgets** (Shop, aktuell, über profax) werden nicht mehr ausgegeben. Sie können bleiben oder gelöscht werden.
 
 ## 7. Startseite (ab Theme-Version 1.4)
@@ -93,9 +93,9 @@ Die Startseite kommt aus dem Theme-Template `front-page.php`. Oben steht weiterh
 | Stellen-Hinweis „Der profax Verlag sucht dich!“ | Im Inhalt von Seite 90, als eigene Zeile mit Leerzeilen davor und danach: `<div class="profax-front-jobs"><a href="/der-profax-verlag-sucht-dich/"><strong>Der profax Verlag sucht dich!</strong> <span>Zur Stellenausschreibung →</span></a></div>`. Das Theme liefert das Aussehen der Box (hellblau, ganze Box ist der Link). Ist die Stelle besetzt, den Block löschen. |
 | Aktuelles | Die 3 neusten Beiträge; der Auszug stammt aus dem Feld „Textauszug“ oder, wenn leer, aus dem Beitragstext (max. 20 Wörter). |
 
-## 8. Wenn die Hauptseite von profaxonline.com nach profax.com umzieht
+## 8. Umzug der Hauptseite von profaxonline.com nach profax.com
 
-Das Shop-WordPress zieht nicht um. Nur die Links auf die Hauptseite müssen nachgeführt werden (sofern der Kunde keine Weiterleitungen einrichtet):
+Das Shop-WordPress zieht nicht um. Die Links auf die Hauptseite zeigen auf `https://www.profax.com/` **ohne** Sprachpfad (`/dech/`, `/dede/`):
 
-1. Im Theme die Konstante `PROFAX_MAIN_URL` in `functions.php` anpassen (Logo-Links in Header und Footer).
-2. Unter **Design → Menüs** die individuellen Links in „Hauptnavigation“, „Login“, „Hilfe“ und „Über profax“ auf die neue Domain ändern.
+1. Im Theme ist die Konstante `PROFAX_MAIN_URL` in `functions.php` bereits umgestellt (Logo-Links in Header und Footer).
+2. Unter **Design → Menüs** die individuellen Links in „Hauptnavigation“, „Login“, „Hilfe“ und „Über profax“ wie in den Tabellen oben eintragen.
